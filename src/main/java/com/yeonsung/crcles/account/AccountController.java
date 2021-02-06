@@ -26,7 +26,7 @@ public class AccountController {
     }
 
     /*
-    * 2021_02-05
+    * 2021_02_05
     *
     * 회원가입기능
     * */
