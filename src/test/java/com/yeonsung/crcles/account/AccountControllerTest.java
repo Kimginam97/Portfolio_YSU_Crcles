@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AccountControllerTest {
 
     @Autowired private MockMvc mockMvc;
+    @Autowired private AccountRepository accountRepository;
 
     @DisplayName("회원가입 뷰가 보이는지 테스트")
     @Test
@@ -42,6 +43,9 @@ class AccountControllerTest {
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
+
+        Account account = accountRepository.findByEmail("Hello@naver.com");
+        assertNotEquals(account.getPassword(),"12345678");
     }
 
     @DisplayName("회원가입 기능 - 입력값 오류")
@@ -54,5 +58,6 @@ class AccountControllerTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/sign-up"));
+
     }
 }
