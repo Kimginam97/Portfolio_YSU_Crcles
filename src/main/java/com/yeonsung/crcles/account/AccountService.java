@@ -20,18 +20,14 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
 
-    /*
-    * 2021_02_06
-    * 회원가입 처리기능
-    * (리팩토링)
-    * */
-    public void processNewAccount(SignUpForm signUpForm){
+    // 새로운 회원을 통해서 회원가입을 처리한다
+    public void processSignUpByNewAccount(SignUpForm signUpForm){
         Account newAccount = saveNewAccount(signUpForm);
         newAccount.generateEmailCheckToken();
-        sendSignUpConfirmEmail(newAccount);
+        sendSignUpByEmail(newAccount);
     }
 
-    // 회원가입 저장 기능
+    // 새로운 회원을 등록한다
     private Account saveNewAccount(@Valid SignUpForm signUpForm){
         Account newAccount = Account.builder()
                 .email(signUpForm.getEmail())
@@ -41,12 +37,12 @@ public class AccountService {
         return accountRepository.save(newAccount);
     }
 
-    // 이메일 보내기 기능
-    private void sendSignUpConfirmEmail(Account newAccount) {
+    // 이메일을 통해서 회원가입을 보낸다
+    private void sendSignUpByEmail(Account newAccount) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(newAccount.getEmail());
         simpleMailMessage.setSubject("연성대학교 회원가입 이메일 인증");
-        simpleMailMessage.setText("/Email-Token : " + newAccount.getEmailCheckToken());
+        simpleMailMessage.setText("/Email-Token:" + newAccount.getEmailCheckToken());
         javaMailSender.send(simpleMailMessage);
     }
 

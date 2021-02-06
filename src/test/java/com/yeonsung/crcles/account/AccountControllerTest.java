@@ -30,9 +30,9 @@ class AccountControllerTest {
     @MockBean
     JavaMailSender javaMailSender;
 
-    @DisplayName("회원가입 뷰가 보이는지 테스트")
+
     @Test
-    void SignUpForm_View() throws Exception {
+    void 회원가입_화면_보이기() throws Exception {
         mockMvc.perform(get("/sign-up"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -40,9 +40,8 @@ class AccountControllerTest {
                 .andExpect(model().attributeExists("signUpForm"));
     }
 
-    @DisplayName("회원가입 기능 - 입력값 정상")
     @Test
-    void signUpSubmit_with_correct_input() throws Exception {
+    void 회원가입_입력_성공() throws Exception {
         mockMvc.perform(post("/sign-up")
                 .param("nickname","KimGiNam")
                 .param("email","Hello@naver.com")
@@ -57,9 +56,8 @@ class AccountControllerTest {
         then(javaMailSender).should().send(any(SimpleMailMessage.class));
     }
 
-    @DisplayName("회원가입 기능 - 입력값 오류")
     @Test
-    void signUpSubmit_with_wrong_input() throws Exception {
+    void 회원가입_입력_오류() throws Exception {
         mockMvc.perform(post("/sign-up")
                 .param("nickname", "KimGiNam")
                 .param("email", "email..")

@@ -27,19 +27,19 @@ public class AccountController {
     }
 
     @GetMapping("/sign-up")
-    public String signForm(Model model){
+    public String signUpFormView(Model model){
         model.addAttribute("signUpForm",new SignUpForm());
         return "account/sign-up";
     }
 
     @PostMapping("/sign-up")
-    public String signUpSubmit(@Valid SignUpForm signUpForm, Errors errors){
+    public String signUpFormProcess(@Valid SignUpForm signUpForm, Errors errors){
         if(errors.hasErrors()){
             return "account/sign-up";
         }
 
         // 회원가입 처리기능
-        accountService.processNewAccount(signUpForm);
+        accountService.processSignUpByNewAccount(signUpForm);
         return "redirect:/";
     }
 
