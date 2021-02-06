@@ -20,16 +20,12 @@ public class AccountController {
     private final AccountService accountService;
     private final SignUpFormValidator signUpFormValidator;
 
+    // 커스텀한 signUpForm 검증 (이메일,닉네임 중복검사)
     @InitBinder("signUpForm")
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(signUpFormValidator);
     }
 
-    /*
-    * 2021_02_05
-    *
-    * 회원가입기능
-    * */
     @GetMapping("/sign-up")
     public String signForm(Model model){
         model.addAttribute("signUpForm",new SignUpForm());
@@ -42,7 +38,8 @@ public class AccountController {
             return "account/sign-up";
         }
 
-        Account account = accountService.saveNewAccount(signUpForm);
+        // 회원가입 처리기능
+        accountService.processNewAccount(signUpForm);
         return "redirect:/";
     }
 

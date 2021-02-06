@@ -67,5 +67,6 @@ class AccountControllerTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/sign-up"));
+
     }
 }
