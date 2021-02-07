@@ -51,6 +51,8 @@ class AccountControllerTest {
                 .andExpect(view().name("redirect:/"));
 
         Account account = accountRepository.findByEmail("Hello@naver.com");
+        assertNotNull(account);
+        assertNotNull(account.getEmailCheckToken());
         assertNotEquals(account.getPassword(),"12345678");
         assertTrue(accountRepository.existsByEmail("Hello@naver.com"));
         then(javaMailSender).should().send(any(SimpleMailMessage.class));
@@ -67,4 +69,38 @@ class AccountControllerTest {
                 .andExpect(view().name("account/sign-up"));
 
     }
+
+    @Test
+    void 인증메일토큰_입력_오류() throws Exception {
+
+        mockMvc.perform(get("/check-email-token")
+                .param("token","adfweanlnl")
+                .param("email","hello@naver.com"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("error"))
+                .andExpect(model().attributeDoesNotExist("nickname"))
+                .andExpect(view().name("account/checked-email"));
+    }
+
+    @Test
+    void 인증메일토큰_입력_확인() throws Exception {
+        Account account = Account.builder()
+                .email("hello@naver.com")
+                .password("12345678")
+                .nickname("kimginam")
+                .build();
+
+        Account newAccount = accountRepository.save(account);
+        newAccount.generateEmailCheckToken();
+
+        mockMvc.perform(get("/check-email-token")
+                .param("token",newAccount.getEmailCheckToken())
+                .param("email",newAccount.getEmail()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeDoesNotExist("error"))
+                .andExpect(model().attributeExists("nickname"))
+                .andExpect(view().name("account/checked-email"));
+    }
+
+
 }

@@ -19,6 +19,7 @@ public class AccountController {
 
     private final AccountService accountService;
     private final SignUpFormValidator signUpFormValidator;
+    private final AccountRepository accountRepository;
 
     // 커스텀한 signUpForm 검증 (이메일,닉네임 중복검사)
     @InitBinder("signUpForm")
@@ -26,6 +27,7 @@ public class AccountController {
         webDataBinder.addValidators(signUpFormValidator);
     }
 
+    // 회원가입
     @GetMapping("/sign-up")
     public String signUpFormView(Model model){
         model.addAttribute("signUpForm",new SignUpForm());
@@ -41,6 +43,27 @@ public class AccountController {
         // 회원가입 처리기능
         accountService.processSignUpByNewAccount(signUpForm);
         return "redirect:/";
+    }
+
+    @GetMapping("/check-email-token")
+    public String checkEmailToken(String token,String email,Model model){
+
+        Account account = accountRepository.findByEmail(email);
+        String view = "account/checked-email";
+
+        if (account == null){
+            model.addAttribute("error","wrong.email");
+            return view;
+        }
+
+        if(!account.isValidToken(token)){
+            model.addAttribute("error","wrong.email");
+            return view;
+        }
+
+        account.completeSignUpEmail();
+        model.addAttribute("nickname",account.getNickname());
+        return view;
     }
 
 }

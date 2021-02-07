@@ -21,6 +21,7 @@ public class AccountService {
     private final JavaMailSender javaMailSender;
 
     // 새로운 회원을 통해서 회원가입을 처리한다
+    @Transactional
     public void processSignUpByNewAccount(SignUpForm signUpForm){
         Account newAccount = saveNewAccount(signUpForm);
         newAccount.generateEmailCheckToken();
@@ -42,7 +43,7 @@ public class AccountService {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(newAccount.getEmail());
         simpleMailMessage.setSubject("연성대학교 회원가입 이메일 인증");
-        simpleMailMessage.setText("/Email-Token:" + newAccount.getEmailCheckToken());
+        simpleMailMessage.setText("/check-email-token?token=" + newAccount.getEmailCheckToken() + "&email="+newAccount.getEmail());
         javaMailSender.send(simpleMailMessage);
     }
 

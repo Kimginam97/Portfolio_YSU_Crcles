@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>StudyOlle</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        .container {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div th:replace="fragments.html :: main-nav"></div>
+
+<!--만약 error 가 왔을경우-->
+<div class="py-5 text-center" th:if="${error}">
+    <p class="lead">이메일 확인</p>
+    <div class="alert alert-danger" role="alert">
+        이메일 확인 링크가 정확하지 않습니다.
+    </div>
+</div>
+
+<!--error 아닌경우 (정상)-->
+<div class="py-5 text-center" th:if="${error == null}">
+    <p class="lead">이메일 확인</p>
+    <h2>
+        <span th:text="${nickname}"></span>님 가입을 축하합니다.
+    </h2>
+    <small class="text-info">이제부터 가입할 때 사용한 이메일 또는 닉네임과 패스트워드로 로그인 할 수 있습니다.</small>
+</div>
+</body>
+</html>

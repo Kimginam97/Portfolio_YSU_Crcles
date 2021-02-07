@@ -38,4 +38,15 @@ public class Account {
     public void generateEmailCheckToken() {
         this.emailCheckToken= UUID.randomUUID().toString();
     }
+
+    // 이메일 검증완료 및 현재시간정보 입력
+    public void completeSignUpEmail(){
+        this.emailVerified=true;
+        this.joinedAt=LocalDateTime.now();
+    }
+
+    // 토큰값 검증
+    public boolean isValidToken(String token){
+        return this.emailCheckToken.equals(token);
+    }
 }
