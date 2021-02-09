@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -37,25 +38,8 @@ class AccountControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/sign-up"))
-                .andExpect(model().attributeExists("signUpForm"));
-    }
-
-    @Test
-    void 회원가입_입력_성공() throws Exception {
-        mockMvc.perform(post("/sign-up")
-                .param("nickname","KimGiNam")
-                .param("email","Hello@naver.com")
-                .param("password","12345678")
-                .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
-
-        Account account = accountRepository.findByEmail("Hello@naver.com");
-        assertNotNull(account);
-        assertNotNull(account.getEmailCheckToken());
-        assertNotEquals(account.getPassword(),"12345678");
-        assertTrue(accountRepository.existsByEmail("Hello@naver.com"));
-        then(javaMailSender).should().send(any(SimpleMailMessage.class));
+                .andExpect(model().attributeExists("signUpForm"))
+                .andExpect(unauthenticated());
     }
 
     @Test
@@ -66,9 +50,30 @@ class AccountControllerTest {
                 .param("password", "12345")
                 .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("account/sign-up"));
-
+                .andExpect(view().name("account/sign-up"))
+                .andExpect(unauthenticated());
     }
+
+    @Test
+    void 회원가입_입력_성공() throws Exception {
+        mockMvc.perform(post("/sign-up")
+                .param("nickname","KimGiNam")
+                .param("email","Hello@naver.com")
+                .param("password","12345678")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"))
+                .andExpect(authenticated().withUsername("KimGiNam"));
+
+        Account account = accountRepository.findByEmail("Hello@naver.com");
+        assertNotNull(account);
+        assertNotNull(account.getEmailCheckToken());
+        assertNotEquals(account.getPassword(),"12345678");
+        assertTrue(accountRepository.existsByEmail("Hello@naver.com"));
+        then(javaMailSender).should().send(any(SimpleMailMessage.class));
+    }
+
+
 
     @Test
     void 인증메일토큰_입력_오류() throws Exception {
@@ -79,7 +84,8 @@ class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("error"))
                 .andExpect(model().attributeDoesNotExist("nickname"))
-                .andExpect(view().name("account/checked-email"));
+                .andExpect(view().name("account/checked-email"))
+                .andExpect(unauthenticated());
     }
 
     @Test
@@ -87,7 +93,7 @@ class AccountControllerTest {
         Account account = Account.builder()
                 .email("hello@naver.com")
                 .password("12345678")
-                .nickname("kimginam")
+                .nickname("KimGiNam")
                 .build();
 
         Account newAccount = accountRepository.save(account);
@@ -99,7 +105,8 @@ class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeDoesNotExist("error"))
                 .andExpect(model().attributeExists("nickname"))
-                .andExpect(view().name("account/checked-email"));
+                .andExpect(view().name("account/checked-email"))
+                .andExpect(authenticated().withUsername("KimGiNam"));
     }
 
 

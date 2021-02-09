@@ -4,11 +4,15 @@ import com.yeonsung.crcles.account.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Service
@@ -22,10 +26,11 @@ public class AccountService {
 
     // 새로운 회원을 통해서 회원가입을 처리한다
     @Transactional
-    public void processSignUpByNewAccount(SignUpForm signUpForm){
+    public Account processSignUpByNewAccount(SignUpForm signUpForm){
         Account newAccount = saveNewAccount(signUpForm);
         newAccount.generateEmailCheckToken();
         sendSignUpByEmail(newAccount);
+        return newAccount;
     }
 
     // 새로운 회원을 등록한다
@@ -45,6 +50,14 @@ public class AccountService {
         simpleMailMessage.setSubject("연성대학교 회원가입 이메일 인증");
         simpleMailMessage.setText("/check-email-token?token=" + newAccount.getEmailCheckToken() + "&email="+newAccount.getEmail());
         javaMailSender.send(simpleMailMessage);
+    }
+
+    // 로그인 기능
+    public void login(Account account){
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                account.getNickname(), account.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+
+        SecurityContextHolder.getContext().setAuthentication(token);
     }
 
 }
