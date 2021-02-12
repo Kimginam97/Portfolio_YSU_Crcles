@@ -29,7 +29,7 @@ public class AccountService {
     public Account processSignUpByNewAccount(SignUpForm signUpForm){
         Account newAccount = saveNewAccount(signUpForm);
         newAccount.generateEmailCheckToken();
-        sendSignUpByEmail(newAccount);
+        sendSignUpConfirmEmail(newAccount);
         return newAccount;
     }
 
@@ -44,7 +44,7 @@ public class AccountService {
     }
 
     // 이메일을 통해서 회원가입을 보낸다
-    private void sendSignUpByEmail(Account newAccount) {
+    public void sendSignUpConfirmEmail(Account newAccount) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(newAccount.getEmail());
         simpleMailMessage.setSubject("연성대학교 회원가입 이메일 인증");

@@ -77,7 +77,6 @@ class AccountControllerTest {
 
     @Test
     void 인증메일토큰_입력_오류() throws Exception {
-
         mockMvc.perform(get("/check-email-token")
                 .param("token","adfweanlnl")
                 .param("email","hello@naver.com"))

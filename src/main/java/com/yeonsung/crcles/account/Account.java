@@ -32,21 +32,29 @@ public class Account {
 
     private String emailCheckToken; // 이메일 검증에 사용할 토큰값
 
-    private LocalDateTime joinedAt; // 가입이된 현재 시간
+    private LocalDateTime joinedTime; // 가입이된 현재 시간
+
+    private LocalDateTime emailCheckTokenGeneratedTime; // 이메일 토큰 생성 시간
 
     // 랜덤한 이메일 토큰생성
     public void generateEmailCheckToken() {
         this.emailCheckToken= UUID.randomUUID().toString();
+        this.emailCheckTokenGeneratedTime=LocalDateTime.now();
     }
 
     // 이메일 검증완료 및 현재시간정보 입력
     public void completeSignUpEmail(){
         this.emailVerified=true;
-        this.joinedAt=LocalDateTime.now();
+        this.joinedTime=LocalDateTime.now();
     }
 
     // 토큰값 검증
     public boolean isValidToken(String token){
         return this.emailCheckToken.equals(token);
+    }
+
+    // 토큰이 생성되는 시간
+    public boolean isSendConfirmEmail() {
+        return this.emailCheckTokenGeneratedTime.isBefore(LocalDateTime.now().minusSeconds(1));
     }
 }
