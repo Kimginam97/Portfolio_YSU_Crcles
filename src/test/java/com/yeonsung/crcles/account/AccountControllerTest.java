@@ -108,5 +108,4 @@ class AccountControllerTest {
                 .andExpect(authenticated().withUsername("KimGiNam"));
     }
 
-
 }
