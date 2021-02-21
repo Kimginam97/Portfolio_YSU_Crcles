@@ -40,9 +40,7 @@ public class AccountController {
             return "account/sign-up";
         }
 
-        // 회원가입 처리
         Account account = accountService.processSignUpByNewAccount(signUpForm);
-        // 로그인
         accountService.login(account);
         return "redirect:/";
     }
@@ -63,10 +61,7 @@ public class AccountController {
             return view;
         }
 
-        // 이메일 검증및 현재시간 정보 입력
         account.completeSignUpEmail();
-
-        // 로그인
         accountService.login(account);
         model.addAttribute("nickname",account.getNickname());
         return view;
