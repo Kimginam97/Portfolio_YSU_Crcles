@@ -1,7 +1,7 @@
 package com.yeonsung.crcles.main;
 
 import com.yeonsung.crcles.account.AccountRepository;
-import com.yeonsung.crcles.account.AccountService;
+import com.yeonsung.crcles.account.AccountServiceImpl;
 import com.yeonsung.crcles.account.form.SignUpForm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
@@ -27,7 +26,7 @@ class MainControllerTest {
     @Autowired
     MockMvc mockMvc;
     @Autowired
-    AccountService accountService;
+    AccountServiceImpl accountService;
     @Autowired
     AccountRepository accountRepository;
 
