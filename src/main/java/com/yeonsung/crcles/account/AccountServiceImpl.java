@@ -21,11 +21,12 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class AccountServiceImpl implements UserDetailsService , AccountService {
+public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
