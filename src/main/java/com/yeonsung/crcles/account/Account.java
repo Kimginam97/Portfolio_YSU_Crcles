@@ -2,10 +2,7 @@ package com.yeonsung.crcles.account;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -35,6 +32,19 @@ public class Account {
     private LocalDateTime joinedTime; // 가입이된 현재 시간
 
     private LocalDateTime emailCheckTokenGeneratedTime; // 이메일 토큰 생성 시간
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private String profileImage;    // 프로필 이미지
+
+    private String bio; // 짧은 소개
+
+    private String grade;  // 학년
+
+    private String department; // 학과
+
+    private String location;    // 사는 지역
+
 
     // 랜덤한 이메일 토큰생성
     public void generateEmailCheckToken() {

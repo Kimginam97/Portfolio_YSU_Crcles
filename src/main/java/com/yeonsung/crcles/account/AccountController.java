@@ -9,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -45,6 +46,7 @@ public class AccountController {
         return "redirect:/";
     }
 
+    // 이메일 체크 토큰
     @GetMapping("/check-email-token")
     public String checkEmailToken(String token,String email,Model model){
 
@@ -61,8 +63,7 @@ public class AccountController {
             return view;
         }
 
-        account.completeSignUpEmail();
-        accountService.login(account);
+        accountService.completeSignUp(account);
         model.addAttribute("nickname",account.getNickname());
         return view;
     }
@@ -86,5 +87,23 @@ public class AccountController {
         accountService.sendSignUpConfirmEmail(account);
         return "redirect:/";
     }
+
+    // 회원 프로필
+    @GetMapping("/profile/{nickname}")
+    public String viewProfile(@PathVariable String nickname, Model model, @CurrentAccount Account account) {
+
+        // 닉네임을 통해서 회원 정보를 찾아 온다
+        Account byNickname = accountRepository.findByNickname(nickname);
+
+        // 닉네임이 없을 경우
+       if (nickname == null) {
+            throw new IllegalArgumentException(nickname + "에 해당하는 사용자가 없습니다.");
+        }
+
+        model.addAttribute("account",byNickname);
+        model.addAttribute("isOwner", byNickname.equals(account));
+        return "account/profile";
+    }
+
 
 }

@@ -1,7 +1,7 @@
 package com.yeonsung.crcles.main;
 
 import com.yeonsung.crcles.account.AccountRepository;
-import com.yeonsung.crcles.account.AccountServiceImpl;
+import com.yeonsung.crcles.account.AccountService;
 import com.yeonsung.crcles.account.form.SignUpForm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ class MainControllerTest {
     @Autowired
     MockMvc mockMvc;
     @Autowired
-    AccountServiceImpl accountService;
+    AccountService accountService;
     @Autowired
     AccountRepository accountRepository;
 
