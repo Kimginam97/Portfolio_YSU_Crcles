@@ -41,7 +41,7 @@ public class AccountController {
             return "account/sign-up";
         }
 
-        Account account = accountService.processSignUpByNewAccount(signUpForm);
+        Account account = accountService.processNewAccount(signUpForm);
         accountService.login(account);
         return "redirect:/";
     }
@@ -101,7 +101,7 @@ public class AccountController {
         }
 
         model.addAttribute("account",byNickname);
-        model.addAttribute("isOwner", byNickname.equals(account));
+        model.addAttribute("isOwner",byNickname.equals(account));
         return "account/profile";
     }
 

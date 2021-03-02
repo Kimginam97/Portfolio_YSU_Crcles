@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+<div th:replace="fragments.html :: main-nav"></div>
+<div class="container">
+    <div class="row mt-5 justify-content-center">
+        <div class="col-2">
+            <div th:replace="fragments.html :: settings-menu(currentMenu='profile')"></div>
+        </div>
+        <div class="col-8">
+            <div th:if="${message}" class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                <span th:text="${message}">메시지</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <h2 class="col-sm-12" th:text="${account.nickname}">닉네임</h2>
+            </div>
+            <div class="row mt-3">
+                <form class="col-sm-6" action="#"
+                      th:action="@{/settings/profile}" th:object="${profile}" method="post" novalidate>
+                    <div class="form-group">
+                        <label for="bio">한 줄 소개</label>
+                        <input id="bio" type="text" th:field="*{bio}" class="form-control"
+                               placeholder="짧은 소개 넣어주세요!" aria-describedby="bioHelp" required>
+                        <small id="bioHelp" class="form-text text-muted">
+                            길지 않게 25자 이내로 입력하세요.
+                        </small>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('bio')}" th:errors="*{bio}">
+                            조금 길어요.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grade">학년</label>
+                        <input id="grade" type="text" th:field="*{grade}" class="form-control"
+                               placeholder="학년을 입력해 주세요!" aria-describedby="occupationHelp" required>
+                        <small id="gradeHelp" class="form-text text-muted">
+                            학년을 입력해 주세요!
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department">학과</label>
+                        <input id="department" type="text" th:field="*{department}" class="form-control"
+                               placeholder="학과를 입력하세요!" aria-describedby="occupationHelp" required>
+                        <small id="departmentHelp" class="form-text text-muted">
+                            학과를 입력하세요!
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">사는 지역</label>
+                        <input id="location" type="text" th:field="*{location}" class="form-control"
+                               placeholder="사는 지역의 도시 이름을 알려주세요!"
+                               aria-describedby="locationHelp" required>
+                        <small id="locationHelp" class="form-text text-muted">
+                           사는 지역의 도시 이름을 알려주세요!
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-block" type="submit"
+                                aria-describedby="submitHelp">수정하기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

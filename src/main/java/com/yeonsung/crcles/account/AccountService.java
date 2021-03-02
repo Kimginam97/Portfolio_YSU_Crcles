@@ -1,7 +1,9 @@
 package com.yeonsung.crcles.account;
 
+import com.yeonsung.crcles.account.form.Profile;
 import com.yeonsung.crcles.account.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,32 +21,18 @@ import java.util.List;
 
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        // 이메일로 회원정보 조회
-        Account account = accountRepository.findByEmail(email);
-
-        // 회원이 없을경우
-        if (account==null){
-            throw new UsernameNotFoundException(email);
-        }
-
-        // 회원이 있을경우
-        return new UserAccount(account);
-    }
+    private final ModelMapper modelMapper;
 
 
-    @Transactional
-    public Account processSignUpByNewAccount(SignUpForm signUpForm) {
+    // 회원가입
+    public Account processNewAccount(SignUpForm signUpForm) {
 
         // 회원 정보 저장
         Account newAccount = saveNewAccount(signUpForm);
@@ -89,7 +77,6 @@ public class AccountService implements UserDetailsService {
     }
 
     // 회원성공
-    @Transactional
     public void completeSignUp(Account account) {
         account.completeSignUpEmail();
         login(account);
@@ -103,6 +90,39 @@ public class AccountService implements UserDetailsService {
                 .password(passwordEncoder.encode(signUpForm.getPassword()))
                 .build();
         return accountRepository.save(newAccount);
+    }
+
+    // 프로필 수정
+    public void updateProfile(Account account, Profile profile) {
+
+        // profile 인스터스를  account 매핑하여 account 객체 생성
+        modelMapper.map(profile, account);
+
+        // account 저장
+        accountRepository.save(account);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
+
+        // 이메일로 회원정보 조회
+        Account account = accountRepository.findByEmail(emailOrNickname);
+
+        // 닉네임으로 조회
+        if (account == null) {
+            account = accountRepository.findByNickname(emailOrNickname);
+        }
+
+
+        // 회원이 없을경우
+        if (account==null){
+            throw new UsernameNotFoundException(emailOrNickname);
+        }
+
+        // 회원이 있을경우
+        return new UserAccount(account);
     }
 
 }

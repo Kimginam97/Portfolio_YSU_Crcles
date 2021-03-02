@@ -8,6 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor
 @NoArgsConstructor
@@ -33,10 +34,6 @@ public class Account {
 
     private LocalDateTime emailCheckTokenGeneratedTime; // 이메일 토큰 생성 시간
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    private String profileImage;    // 프로필 이미지
-
     private String bio; // 짧은 소개
 
     private String grade;  // 학년
@@ -44,6 +41,10 @@ public class Account {
     private String department; // 학과
 
     private String location;    // 사는 지역
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private String profileImage;    // 프로필 이미지
 
 
     // 랜덤한 이메일 토큰생성

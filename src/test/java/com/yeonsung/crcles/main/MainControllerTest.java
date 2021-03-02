@@ -36,7 +36,7 @@ class MainControllerTest {
         signUpForm.setNickname("KimGiNam");
         signUpForm.setEmail("Hello@email.com");
         signUpForm.setPassword("12345678");
-        accountService.processSignUpByNewAccount(signUpForm);
+        accountService.processNewAccount(signUpForm);
     }
 
     @AfterEach
