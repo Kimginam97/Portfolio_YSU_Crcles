@@ -19,4 +19,6 @@ public class Profile {
     @Length(max = 25)
     private String location;    // 사는 지역
 
+    private String profileImage;
+
 }
