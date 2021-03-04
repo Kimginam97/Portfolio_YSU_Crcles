@@ -102,6 +102,12 @@ public class AccountService implements UserDetailsService {
         accountRepository.save(account);
     }
 
+    // 패스워드 수정
+    public void updatePassword(Account account, String newPassword) {
+        account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepository.save(account);
+    }
+
 
     @Override
     @Transactional(readOnly = true)
