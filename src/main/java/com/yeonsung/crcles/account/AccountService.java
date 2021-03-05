@@ -1,6 +1,7 @@
 package com.yeonsung.crcles.account;
 
-import com.yeonsung.crcles.account.form.Profile;
+import com.yeonsung.crcles.account.form.NotificationsForm;
+import com.yeonsung.crcles.account.form.ProfileForm;
 import com.yeonsung.crcles.account.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -93,10 +94,10 @@ public class AccountService implements UserDetailsService {
     }
 
     // 프로필 수정
-    public void updateProfile(Account account, Profile profile) {
+    public void updateProfile(Account account, ProfileForm profileform) {
 
         // profile 인스터스를  account 매핑하여 account 객체 생성
-        modelMapper.map(profile, account);
+        modelMapper.map(profileform, account);
 
         // account 저장
         accountRepository.save(account);
@@ -105,6 +106,14 @@ public class AccountService implements UserDetailsService {
     // 패스워드 수정
     public void updatePassword(Account account, String newPassword) {
         account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepository.save(account);
+    }
+
+    // 알람 수정
+    public void updateNotifications(Account account, NotificationsForm notificationsForm){
+
+        modelMapper.map(notificationsForm,account);
+
         accountRepository.save(account);
     }
 

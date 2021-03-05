@@ -1,7 +1,8 @@
 package com.yeonsung.crcles.account;
 
+import com.yeonsung.crcles.account.form.NotificationsForm;
 import com.yeonsung.crcles.account.form.PasswordForm;
-import com.yeonsung.crcles.account.form.Profile;
+import com.yeonsung.crcles.account.form.ProfileForm;
 import com.yeonsung.crcles.account.validator.PasswordFormValidator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,6 +27,9 @@ public class SettingsController {
     static final String SETTINGS_PASSWORD_VIEW_NAME = "settings/password";
     static final String SETTINGS_PASSWORD_URL = "/settings/password";
 
+    static final String SETTINGS_NOTIFICATIONS_VIEW_NAME = "settings/notifications";
+    static final String SETTINGS_NOTIFICATIONS_URL = "/settings/notifications";
+
     private final AccountService accountService;
     private final ModelMapper modelMapper;
 
@@ -34,17 +38,21 @@ public class SettingsController {
         webDataBinder.addValidators(new PasswordFormValidator());
     }
 
+
+    /*
+    * 프로필 수정
+    * */
     @GetMapping(SETTINGS_PROFILE_URL)
     public String updateProfileForm(@CurrentAccount Account account , Model model){
         model.addAttribute("account",account);
 
         // account 인스턴스를 Profile 매핑하여 Profile 객체 생성
-        model.addAttribute("profile",modelMapper.map(account,Profile.class));
+        model.addAttribute("profile",modelMapper.map(account, ProfileForm.class));
         return SETTINGS_PROFILE_VIEW_NAME;
     }
 
     @PostMapping(SETTINGS_PROFILE_URL)
-    public String updateProfile(@CurrentAccount Account account, @Valid Profile profile,Errors errors,
+    public String updateProfile(@CurrentAccount Account account, @Valid ProfileForm profile, Errors errors,
                                 Model model, RedirectAttributes attributes){
 
         // 에러가 있을경우
@@ -63,6 +71,9 @@ public class SettingsController {
 
     }
 
+    /*
+    * 패스워드 수정
+    * */
     @GetMapping(SETTINGS_PASSWORD_URL)
     public String updatePasswordForm(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
@@ -81,6 +92,30 @@ public class SettingsController {
         accountService.updatePassword(account, passwordForm.getNewPassword());
         attributes.addFlashAttribute("message", "패스워드를 변경했습니다.");
         return "redirect:" + SETTINGS_PASSWORD_URL;
+    }
+
+
+    /*
+    * 알림 수정
+    * */
+    @GetMapping(SETTINGS_NOTIFICATIONS_URL)
+    public String updateNotificationsForm(@CurrentAccount Account account, Model model) {
+        model.addAttribute(account);
+        model.addAttribute("notificationsForm",modelMapper.map(account,NotificationsForm.class));
+        return SETTINGS_NOTIFICATIONS_VIEW_NAME;
+    }
+
+    @PostMapping(SETTINGS_NOTIFICATIONS_URL)
+    public String updateNotifications(@CurrentAccount Account account, @Valid NotificationsForm notificationsForm, Errors errors,
+                                      Model model, RedirectAttributes attributes) {
+        if (errors.hasErrors()) {
+            model.addAttribute(account);
+            return SETTINGS_NOTIFICATIONS_VIEW_NAME;
+        }
+
+        accountService.updateNotifications(account, notificationsForm);
+        attributes.addFlashAttribute("message", "알림 설정을 변경했습니다.");
+        return "redirect:" + SETTINGS_NOTIFICATIONS_URL;
     }
 
 }

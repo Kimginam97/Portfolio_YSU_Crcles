@@ -5,7 +5,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 @Data
-public class Profile {
+public class ProfileForm {
 
     @Length(max = 25)
     private String bio; // 짧은 소개
@@ -19,6 +19,6 @@ public class Profile {
     @Length(max = 25)
     private String location;    // 사는 지역
 
-    private String profileImage;
+    private String profileImage;    // 프로필 이미지
 
 }

@@ -18,6 +18,10 @@ public class Account {
     @GeneratedValue
     private Long id; // 식별자
 
+
+    /*
+    * 회원가입
+    * */
     @Column(unique = true)
     private String email; // 이메일
 
@@ -26,6 +30,10 @@ public class Account {
 
     private String password; // 비밀번호
 
+    /*
+    * 이메일
+    * */
+
     private boolean emailVerified; // 이메일 인증
 
     private String emailCheckToken; // 이메일 검증에 사용할 토큰값
@@ -33,6 +41,10 @@ public class Account {
     private LocalDateTime joinedTime; // 가입이된 현재 시간
 
     private LocalDateTime emailCheckTokenGeneratedTime; // 이메일 토큰 생성 시간
+
+    /*
+    * 프로필
+    * */
 
     private String bio; // 짧은 소개
 
@@ -45,6 +57,23 @@ public class Account {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private String profileImage;    // 프로필 이미지
+
+
+    /*
+    * 알림
+    * */
+
+    private boolean circlesCreatedByEmail;  // 동아리 생성 이메일 알람
+
+    private boolean circlesCreatedByWeb;    // 동아리 생성 웹 알람
+
+    private boolean circlesEnrollmentResultByEmail; // 동아리 등록 이메일 알람
+
+    private boolean circlesEnrollmentResultByWeb; // 동아리 등록 웹 알람
+
+    private boolean circlesUpdatedByEmail;  // 동아리 변경 이메일 알람
+
+    private boolean circlesUpdatedByWeb;    // // 동아리 변경 웹 알람
 
 
     // 랜덤한 이메일 토큰생성

@@ -1,6 +1,7 @@
 package com.yeonsung.crcles.account;
 
 import com.yeonsung.crcles.WithAccount;
+import com.yeonsung.crcles.account.form.NotificationsForm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -112,4 +113,15 @@ class SettingsControllerTest {
                 .andExpect(model().attributeExists("passwordForm"))
                 .andExpect(model().attributeExists("account"));
     }
+
+    @WithAccount("dudurian")
+    @DisplayName("프로필 수정 폼")
+    @Test
+    void 알림_수정_뷰() throws Exception {
+        mockMvc.perform(get(SettingsController.SETTINGS_NOTIFICATIONS_URL))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("notificationsForm"));
+    }
+
 }
