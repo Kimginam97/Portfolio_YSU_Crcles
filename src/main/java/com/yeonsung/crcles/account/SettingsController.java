@@ -1,8 +1,10 @@
 package com.yeonsung.crcles.account;
 
+import com.yeonsung.crcles.account.form.NicknameForm;
 import com.yeonsung.crcles.account.form.NotificationsForm;
 import com.yeonsung.crcles.account.form.PasswordForm;
 import com.yeonsung.crcles.account.form.ProfileForm;
+import com.yeonsung.crcles.account.validator.NicknameFormValidator;
 import com.yeonsung.crcles.account.validator.PasswordFormValidator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,12 +32,21 @@ public class SettingsController {
     static final String SETTINGS_NOTIFICATIONS_VIEW_NAME = "settings/notifications";
     static final String SETTINGS_NOTIFICATIONS_URL = "/settings/notifications";
 
+    static final String SETTINGS_ACCOUNT_VIEW_NAME = "settings/account";
+    static final String SETTINGS_ACCOUNT_URL = "/" + SETTINGS_ACCOUNT_VIEW_NAME;
+
     private final AccountService accountService;
     private final ModelMapper modelMapper;
+    private final NicknameFormValidator nicknameFormValidator;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(new PasswordFormValidator());
+    }
+
+    @InitBinder("nicknameForm")
+    public void nicknameFormInitBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(nicknameFormValidator);
     }
 
 
@@ -47,12 +58,12 @@ public class SettingsController {
         model.addAttribute("account",account);
 
         // account 인스턴스를 Profile 매핑하여 Profile 객체 생성
-        model.addAttribute("profile",modelMapper.map(account, ProfileForm.class));
+        model.addAttribute("profileForm",modelMapper.map(account, ProfileForm.class));
         return SETTINGS_PROFILE_VIEW_NAME;
     }
 
     @PostMapping(SETTINGS_PROFILE_URL)
-    public String updateProfile(@CurrentAccount Account account, @Valid ProfileForm profile, Errors errors,
+    public String updateProfile(@CurrentAccount Account account, @Valid ProfileForm profileForm, Errors errors,
                                 Model model, RedirectAttributes attributes){
 
         // 에러가 있을경우
@@ -62,7 +73,7 @@ public class SettingsController {
        }
 
        // 프로필 수정
-       accountService.updateProfile(account,profile);
+       accountService.updateProfile(account,profileForm);
 
        // 알람메시지
        attributes.addFlashAttribute("message","프로필을 수정했습니다.");
@@ -116,6 +127,29 @@ public class SettingsController {
         accountService.updateNotifications(account, notificationsForm);
         attributes.addFlashAttribute("message", "알림 설정을 변경했습니다.");
         return "redirect:" + SETTINGS_NOTIFICATIONS_URL;
+    }
+
+    /*
+    * 계정 닉네임 수정
+    * */
+    @GetMapping(SETTINGS_ACCOUNT_URL)
+    public String updateAccountForm(@CurrentAccount Account account, Model model) {
+        model.addAttribute(account);
+        model.addAttribute(modelMapper.map(account, NicknameForm.class));
+        return SETTINGS_ACCOUNT_VIEW_NAME;
+    }
+
+    @PostMapping(SETTINGS_ACCOUNT_URL)
+    public String updateAccount(@CurrentAccount Account account, @Valid NicknameForm nicknameForm, Errors errors,
+                                Model model, RedirectAttributes attributes) {
+        if (errors.hasErrors()) {
+            model.addAttribute(account);
+            return SETTINGS_ACCOUNT_VIEW_NAME;
+        }
+
+        accountService.updateNickname(account, nicknameForm.getNickname());
+        attributes.addFlashAttribute("message", "닉네임을 수정했습니다.");
+        return "redirect:" + SETTINGS_ACCOUNT_URL;
     }
 
 }

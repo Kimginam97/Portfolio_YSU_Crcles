@@ -117,6 +117,13 @@ public class AccountService implements UserDetailsService {
         accountRepository.save(account);
     }
 
+    // 닉네임 수정
+    public void updateNickname(Account account, String nickname) {
+        account.setNickname(nickname);
+        accountRepository.save(account);
+        login(account);
+    }
+
 
     @Override
     @Transactional(readOnly = true)

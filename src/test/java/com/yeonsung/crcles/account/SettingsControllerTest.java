@@ -48,7 +48,7 @@ class SettingsControllerTest {
     @Test
     void 프로필_수정_성공() throws Exception {
         String bio = "짧은 소개를 수정하는 경우";
-        mockMvc.perform(post("/settings/profile")
+        mockMvc.perform(post(SettingsController.SETTINGS_PROFILE_URL)
                 .param("bio", bio)
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
@@ -63,13 +63,13 @@ class SettingsControllerTest {
     @Test
     void 프로필_수정_에러() throws Exception {
         String bio = "길게 소개를 수정하는 경우. 길게 소개를 수정하는 경우. 길게 소개를 수정하는 경우. 너무나도 길게 소개를 수정하는 경우. ";
-        mockMvc.perform(post("/settings/profile")
+        mockMvc.perform(post(SettingsController.SETTINGS_PROFILE_URL)
                 .param("bio", bio)
                 .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("settings/profile"))
+                .andExpect(view().name(SettingsController.SETTINGS_PROFILE_VIEW_NAME))
                 .andExpect(model().attributeExists("account"))
-                .andExpect(model().attributeExists("profile"))
+                .andExpect(model().attributeExists("profileForm"))
                 .andExpect(model().hasErrors());
 
         Account dudurian = accountRepository.findByNickname("dudurian");
@@ -122,6 +122,43 @@ class SettingsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("notificationsForm"));
+    }
+
+    @WithAccount("dudurian")
+    @Test
+    void 닉네임_수정_뷰() throws Exception {
+        mockMvc.perform(get(SettingsController.SETTINGS_ACCOUNT_URL))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("nicknameForm"));
+    }
+
+    @WithAccount("dudurian")
+    @Test
+    void 닉네임_수정_성공() throws Exception {
+        String newNickname = "duduri";
+        mockMvc.perform(post(SettingsController.SETTINGS_ACCOUNT_URL)
+                .param("nickname", newNickname)
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(SettingsController.SETTINGS_ACCOUNT_URL))
+                .andExpect(flash().attributeExists("message"));
+
+        assertNotNull(accountRepository.findByNickname("duduri"));
+    }
+
+    @WithAccount("dudurian")
+    @Test
+    void 닉네임_수정_에러() throws Exception {
+        String newNickname = "¯\\_(ツ)_/¯";
+        mockMvc.perform(post(SettingsController.SETTINGS_ACCOUNT_URL)
+                .param("nickname", newNickname)
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name(SettingsController.SETTINGS_ACCOUNT_VIEW_NAME))
+                .andExpect(model().hasErrors())
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("nicknameForm"));
     }
 
 }
