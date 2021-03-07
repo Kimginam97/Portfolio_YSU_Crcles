@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -103,6 +104,52 @@ public class AccountController {
         model.addAttribute("account",byNickname);
         model.addAttribute("isOwner",byNickname.equals(account));
         return "account/profile";
+    }
+
+    // 패스워드 없이 이메일 로그인
+    @GetMapping("/email-login")
+    public String emailLoginForm() {
+        return "account/email-login";
+    }
+
+    @PostMapping("/email-login")
+    public String sendEmailLoginLink(String email, Model model, RedirectAttributes attributes) {
+
+        // 해당계정 이메일 찾아온다
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            model.addAttribute("error", "유효한 이메일 주소가 아닙니다.");
+            return "account/email-login";
+        }
+
+        if (!account.isSendConfirmEmail()) {
+            model.addAttribute("error", "이메일 로그인은 1시간 뒤에 사용할 수 있습니다.");
+            return "account/email-login";
+        }
+
+        // 이메일 로그인링크 보내기
+        accountService.sendLoginLink(account);
+        attributes.addFlashAttribute("message", "이메일 인증 메일을 발송했습니다.");
+        return "redirect:/email-login";
+    }
+
+    // 이메일 로그인 링크 보내졌을때
+    @GetMapping("/login-by-email")
+    public String loginByEmail(String token, String email, Model model) {
+
+        // 해당 계정 이메일을 찾아온다
+        Account account = accountRepository.findByEmail(email);
+        String view = "account/logged-in-by-email";
+
+        // 계정값이 없거나 계정의 토큰이 1시간이전이 아니면 에러
+        if (account == null || !account.isValidToken(token)) {
+            model.addAttribute("error", "로그인할 수 없습니다.");
+            return view;
+        }
+
+        // 다시로그인한다
+        accountService.login(account);
+        return view;
     }
 
 

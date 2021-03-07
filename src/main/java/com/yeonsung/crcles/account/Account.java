@@ -42,6 +42,7 @@ public class Account {
 
     private LocalDateTime emailCheckTokenGeneratedTime; // 이메일 토큰 생성 시간
 
+
     /*
     * 프로필
     * */
@@ -97,4 +98,5 @@ public class Account {
     public boolean isSendConfirmEmail() {
         return this.emailCheckTokenGeneratedTime.isBefore(LocalDateTime.now().minusSeconds(1));
     }
+
 }

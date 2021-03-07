@@ -41,7 +41,7 @@ class SettingsControllerTest {
         mockMvc.perform(get("/settings/profile"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("account"))
-                .andExpect(model().attributeExists("profile"));
+                .andExpect(model().attributeExists("profileForm"));
     }
 
     @WithAccount("dudurian")
