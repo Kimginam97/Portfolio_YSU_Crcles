@@ -1,9 +1,11 @@
 package com.yeonsung.crcles.account;
 
+import com.yeonsung.crcles.tag.Tag;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -76,6 +78,11 @@ public class Account {
 
     private boolean circlesUpdatedByWeb;    // // 동아리 변경 웹 알람
 
+    /*
+    * 태그
+    * */
+    @ManyToMany
+    private Set<Tag> tags;
 
     // 랜덤한 이메일 토큰생성
     public void generateEmailCheckToken() {
