@@ -25,6 +25,15 @@
     </div>
 </div>
 <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+<script type="application/javascript" th:inline="javascript">
+    $(function() {
+        var csrfToken = /*[[${_csrf.token}]]*/ null;
+        var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        });
+    });
+</script>
 <script type="application/javascript">
     $(function () {
         function tagRequest(url, tagTitle) {
@@ -35,37 +44,46 @@
                     rightKey: true,
                 },
                 contentType: "application/json; charset=utf-8",
+                <!-- Post 요청-->
                 method: "POST",
+                <!-- /settings/tags + add ? remove  호출이 간다-->
                 url: "/settings/tags" + url,
+                <!-- JSON 형태로 Key,Value 서버쪽으로 보낸다-->
                 data: JSON.stringify({'tagTitle': tagTitle})
             }).done(function (data, status) {
                 console.log("${data} and status is ${status}");
             });
         }
 
+        <!-- add 매소드-->
         function onAdd(e) {
             tagRequest("/add", e.detail.data.value);
         }
 
+        <!-- Remove 메소드-->
         function onRemove(e) {
             tagRequest("/remove", e.detail.data.value);
         }
 
+        <!-- <input id="tags" type="text" name="tags" class="tagify-outside" aria-describedby="tagHelp"/> 의 tags input 창-->
         var tagInput = document.querySelector("#tags");
 
+        <!---->
         var tagify = new Tagify(tagInput, {
             pattern: /^.{0,20}$/,
             dropdown : {
+                <!-- 단일문자 입력후 태그문자 제안-->
                 enabled: 1, // suggest tags after a single character input
             } // map tags
         });
 
+        <!-- add , remove 메소드 호출-->
         tagify.on("add", onAdd);
         tagify.on("remove", onRemove);
 
-        // add a class to Tagify's input element
+        // Tagify의 입력 요소에 클래스 추가
         tagify.DOM.input.classList.add('form-control');
-        // re-place Tagify's input element outside of the  element (tagify.DOM.scope), just before it
+        // Tagify의 입력 요소를 요소 외부 (tagify.DOM.scope) 바로 앞에 다시 배치합니다.
         tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
     });
 </script>

@@ -6,15 +6,17 @@ import com.yeonsung.crcles.account.form.PasswordForm;
 import com.yeonsung.crcles.account.form.ProfileForm;
 import com.yeonsung.crcles.account.validator.NicknameFormValidator;
 import com.yeonsung.crcles.account.validator.PasswordFormValidator;
+import com.yeonsung.crcles.tag.Tag;
+import com.yeonsung.crcles.tag.TagForm;
+import com.yeonsung.crcles.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -47,6 +49,7 @@ public class SettingsController {
     private final AccountService accountService;
     private final ModelMapper modelMapper;
     private final NicknameFormValidator nicknameFormValidator;
+    private final TagRepository tagRepository;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -162,12 +165,26 @@ public class SettingsController {
     }
 
     /*
-    * 태그 뷰
+    * 태그 추가
     * */
     @GetMapping(SETTINGS_TAGS_URL)
     public String updateTags(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
         return SETTINGS_TAGS_VIEW_NAME;
+    }
+
+    @PostMapping("/settings/tags/add")
+    @ResponseBody
+    public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
+        String title = tagForm.getTagTitle();
+
+        Tag tag = tagRepository.findByTitle(title);
+        if (tag == null) {
+            tag = tagRepository.save(Tag.builder().title(tagForm.getTagTitle()).build());
+        }
+
+        accountService.addTag(account, tag);
+        return ResponseEntity.ok().build();
     }
 
 }

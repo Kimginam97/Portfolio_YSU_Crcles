@@ -3,6 +3,7 @@ package com.yeonsung.crcles.account;
 import com.yeonsung.crcles.account.form.NotificationsForm;
 import com.yeonsung.crcles.account.form.ProfileForm;
 import com.yeonsung.crcles.account.form.SignUpForm;
+import com.yeonsung.crcles.tag.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -133,6 +135,12 @@ public class AccountService implements UserDetailsService {
         mailMessage.setText("/login-by-email?token=" + account.getEmailCheckToken() +
                 "&email=" + account.getEmail());
         javaMailSender.send(mailMessage);
+    }
+
+    // 태그 추가하기
+    public void addTag(Account account, Tag tag) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getTags().add(tag));
     }
 
 
