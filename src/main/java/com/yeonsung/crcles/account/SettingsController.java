@@ -1,5 +1,7 @@
 package com.yeonsung.crcles.account;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeonsung.crcles.account.form.NicknameForm;
 import com.yeonsung.crcles.account.form.NotificationsForm;
 import com.yeonsung.crcles.account.form.PasswordForm;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -52,6 +55,7 @@ public class SettingsController {
     private final ModelMapper modelMapper;
     private final NicknameFormValidator nicknameFormValidator;
     private final TagRepository tagRepository;
+    private final ObjectMapper objectMapper;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -175,15 +179,19 @@ public class SettingsController {
      * 태그 삭제
      * */
     @GetMapping(SETTINGS_TAGS_URL)
-    public String updateTags(@CurrentAccount Account account, Model model) {
+    public String updateTags(@CurrentAccount Account account, Model model) throws JsonProcessingException {
         model.addAttribute(account);
         Set<Tag> tags = accountService.getTags(account);
         model.addAttribute("tags", tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
+
+        // 자동완성기능
+        List<String> allTags = tagRepository.findAll().stream().map(Tag::getTitle).collect(Collectors.toList());
+        model.addAttribute("whitelist", objectMapper.writeValueAsString(allTags));
         return SETTINGS_TAGS_VIEW_NAME;
     }
 
 
-    @PostMapping("/settings/tags/add")
+    @PostMapping(SETTINGS_TAGS_URL+ "/add")
     @ResponseBody
     public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
         String title = tagForm.getTagTitle();
