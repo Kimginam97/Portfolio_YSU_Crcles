@@ -41,9 +41,6 @@ public class AccountService implements UserDetailsService {
         // 회원 정보 저장
         Account newAccount = saveNewAccount(signUpForm);
 
-        // 회원 이메일 토큰 생성
-        newAccount.generateEmailCheckToken();
-
         // 이메일 인증번호 전송
         sendSignUpConfirmEmail(newAccount);
 
@@ -88,12 +85,10 @@ public class AccountService implements UserDetailsService {
 
     // 회원 정보 저장
     public Account saveNewAccount(@Valid SignUpForm signUpForm){
-        Account newAccount = Account.builder()
-                .email(signUpForm.getEmail())
-                .nickname(signUpForm.getNickname())
-                .password(passwordEncoder.encode(signUpForm.getPassword()))
-                .build();
-        return accountRepository.save(newAccount);
+        signUpForm.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
+        Account account = modelMapper.map(signUpForm, Account.class);
+        account.generateEmailCheckToken();
+        return accountRepository.save(account);
     }
 
     // 프로필 수정
