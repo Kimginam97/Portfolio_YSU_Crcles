@@ -97,6 +97,7 @@ public class SettingsController {
     }
 
     /*
+    * 패스워드 조회
     * 패스워드 수정
     * */
     @GetMapping(SETTINGS_PASSWORD_URL)
@@ -121,6 +122,7 @@ public class SettingsController {
 
 
     /*
+    * 알림 조회
     * 알림 수정
     * */
     @GetMapping(SETTINGS_NOTIFICATIONS_URL)
@@ -144,6 +146,7 @@ public class SettingsController {
     }
 
     /*
+    * 계정 닉네임 조회
     * 계정 닉네임 수정
     * */
     @GetMapping(SETTINGS_ACCOUNT_URL)
@@ -167,8 +170,10 @@ public class SettingsController {
     }
 
     /*
-    * 태그 추가
-    * */
+     * 태그 조회
+     * 태그 추가
+     * 태그 삭제
+     * */
     @GetMapping(SETTINGS_TAGS_URL)
     public String updateTags(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
@@ -176,6 +181,7 @@ public class SettingsController {
         model.addAttribute("tags", tags.stream().map(Tag::getTitle).collect(Collectors.toList()));
         return SETTINGS_TAGS_VIEW_NAME;
     }
+
 
     @PostMapping("/settings/tags/add")
     @ResponseBody
@@ -188,6 +194,19 @@ public class SettingsController {
         }
 
         accountService.addTag(account, tag);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(SETTINGS_TAGS_URL + "/remove")
+    @ResponseBody
+    public ResponseEntity removeTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
+        String title = tagForm.getTagTitle();
+        Tag tag = tagRepository.findByTitle(title);
+        if (tag == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        accountService.removeTag(account, tag);
         return ResponseEntity.ok().build();
     }
 

@@ -151,6 +151,12 @@ public class AccountService implements UserDetailsService {
         return byId.orElseThrow().getTags();
     }
 
+    // 태그 삭제하기
+    public void removeTag(Account account, Tag tag) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getTags().remove(tag));
+    }
+
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
