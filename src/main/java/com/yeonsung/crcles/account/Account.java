@@ -1,6 +1,7 @@
 package com.yeonsung.crcles.account;
 
 import com.yeonsung.crcles.tag.Tag;
+import com.yeonsung.crcles.zone.Zone;
 import lombok.*;
 
 import javax.persistence.*;
@@ -81,9 +82,13 @@ public class Account {
 
     /*
     * 태그
+    * 지역
     * */
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
+
+    @ManyToMany
+    private Set<Zone> zones = new HashSet<>();
 
     // 랜덤한 이메일 토큰생성
     public void generateEmailCheckToken() {
