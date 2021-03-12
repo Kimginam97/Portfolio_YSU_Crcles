@@ -78,7 +78,7 @@ public class Account {
 
     private boolean circlesUpdatedByEmail;  // 동아리 변경 이메일 알람
 
-    private boolean circlesUpdatedByWeb;    // // 동아리 변경 웹 알람
+    private boolean circlesUpdatedByWeb;    // 동아리 변경 웹 알람
 
     /*
     * 태그
