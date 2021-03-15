@@ -3,9 +3,12 @@ package com.yeonsung.crcles.account;
 import com.yeonsung.crcles.account.form.NotificationsForm;
 import com.yeonsung.crcles.account.form.ProfileForm;
 import com.yeonsung.crcles.account.form.SignUpForm;
+import com.yeonsung.crcles.mail.EmailMessage;
+import com.yeonsung.crcles.mail.EmailService;
 import com.yeonsung.crcles.tag.Tag;
 import com.yeonsung.crcles.zone.Zone;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -32,7 +35,7 @@ public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender javaMailSender;
+    private final EmailService emailService;
     private final ModelMapper modelMapper;
 
 
@@ -51,20 +54,14 @@ public class AccountService implements UserDetailsService {
     // 회원 검증 이메일 보내기
     public void sendSignUpConfirmEmail(Account newAccount) {
 
-        // 메일 메시지 객체 생성
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(newAccount.getEmail())
+                .subject("연성대학교 동아리 회원 가입 인증")
+                .message("/check-email-token?token=" + newAccount.getEmailCheckToken() +
+                        "&email=" + newAccount.getEmail())
+                .build();
 
-        // 메일 받는 사람
-        simpleMailMessage.setTo(newAccount.getEmail());
-
-        // 메일 제목
-        simpleMailMessage.setSubject("연성대학교 회원가입 이메일 인증");
-
-        // 메일 내용
-        simpleMailMessage.setText("/check-email-token?token=" + newAccount.getEmailCheckToken() + "&email="+newAccount.getEmail());
-
-        // 메일 보내기
-        javaMailSender.send(simpleMailMessage);
+        emailService.sendEmail(emailMessage);
     }
 
     // 로그인
@@ -125,13 +122,13 @@ public class AccountService implements UserDetailsService {
 
     // 로그인 링크
     public void sendLoginLink(Account account) {
-        account.generateEmailCheckToken();
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(account.getEmail());
-        mailMessage.setSubject("스터디올래, 로그인 링크");
-        mailMessage.setText("/login-by-email?token=" + account.getEmailCheckToken() +
-                "&email=" + account.getEmail());
-        javaMailSender.send(mailMessage);
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(account.getEmail())
+                .subject("연성대학교 동아리 로그인 링크")
+                .message("/login-by-email?token=" + account.getEmailCheckToken() +
+                        "&email=" + account.getEmail())
+                .build();
+        emailService.sendEmail(emailMessage);
     }
 
     // 태그 추가하기

@@ -1,5 +1,7 @@
 package com.yeonsung.crcles.account;
 
+import com.yeonsung.crcles.mail.EmailMessage;
+import com.yeonsung.crcles.mail.EmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ class AccountControllerTest {
     @Autowired private MockMvc mockMvc;
     @Autowired private AccountRepository accountRepository;
     @MockBean
-    JavaMailSender javaMailSender;
+    EmailService emailService;
 
 
     @Test
@@ -70,7 +72,7 @@ class AccountControllerTest {
         assertNotNull(account.getEmailCheckToken());
         assertNotEquals(account.getPassword(),"12345678");
         assertTrue(accountRepository.existsByEmail("Hello@naver.com"));
-        then(javaMailSender).should().send(any(SimpleMailMessage.class));
+        then(emailService).should().sendEmail(any(EmailMessage.class));
     }
 
 
