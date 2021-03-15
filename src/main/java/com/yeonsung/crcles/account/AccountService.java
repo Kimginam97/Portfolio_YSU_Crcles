@@ -3,6 +3,7 @@ package com.yeonsung.crcles.account;
 import com.yeonsung.crcles.account.form.NotificationsForm;
 import com.yeonsung.crcles.account.form.ProfileForm;
 import com.yeonsung.crcles.account.form.SignUpForm;
+import com.yeonsung.crcles.config.AppProperties;
 import com.yeonsung.crcles.mail.EmailMessage;
 import com.yeonsung.crcles.mail.EmailService;
 import com.yeonsung.crcles.tag.Tag;
@@ -21,6 +22,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -37,7 +40,8 @@ public class AccountService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final ModelMapper modelMapper;
-
+    private final TemplateEngine templateEngine;
+    private final AppProperties appProperties;
 
     // 회원가입
     public Account processNewAccount(SignUpForm signUpForm) {
@@ -54,11 +58,20 @@ public class AccountService implements UserDetailsService {
     // 회원 검증 이메일 보내기
     public void sendSignUpConfirmEmail(Account newAccount) {
 
+        // HTML 내용
+        Context context = new Context();
+        context.setVariable("link", "/check-email-token?token=" + newAccount.getEmailCheckToken() +
+                "&email=" + newAccount.getEmail());
+        context.setVariable("nickname", newAccount.getNickname());
+        context.setVariable("linkName", "이메일 인증하기");
+        context.setVariable("message", "스터디올래 서비스를 사용하려면 링크를 클릭하세요.");
+        context.setVariable("host", appProperties.getHost());
+        String message = templateEngine.process("mail/simple-link", context);
+
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(newAccount.getEmail())
                 .subject("연성대학교 동아리 회원 가입 인증")
-                .message("/check-email-token?token=" + newAccount.getEmailCheckToken() +
-                        "&email=" + newAccount.getEmail())
+                .message(message)
                 .build();
 
         emailService.sendEmail(emailMessage);
@@ -122,11 +135,20 @@ public class AccountService implements UserDetailsService {
 
     // 로그인 링크
     public void sendLoginLink(Account account) {
+
+        Context context = new Context();
+        context.setVariable("link", "/login-by-email?token=" + account.getEmailCheckToken() +
+                "&email=" + account.getEmail());
+        context.setVariable("nickname", account.getNickname());
+        context.setVariable("linkName", "연성대 동아리 로그인하기");
+        context.setVariable("message", "로그인 하려면 아래 링크를 클릭하세요.");
+        context.setVariable("host", appProperties.getHost());
+        String message = templateEngine.process("mail/simple-link", context);
+
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(account.getEmail())
                 .subject("연성대학교 동아리 로그인 링크")
-                .message("/login-by-email?token=" + account.getEmailCheckToken() +
-                        "&email=" + account.getEmail())
+                .message(message)
                 .build();
         emailService.sendEmail(emailMessage);
     }
