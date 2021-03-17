@@ -12,6 +12,8 @@ public class ClubService {
 
     private final ClubRepository clubRepository;
 
+
+    // 동아리 생성
     public Club createNewClub(Club club, Account account){
         Club newClub = clubRepository.save(club);
         newClub.addManager(account);

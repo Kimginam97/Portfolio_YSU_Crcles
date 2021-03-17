@@ -1,6 +1,7 @@
 package com.yeonsung.crcles.club;
 
 import com.yeonsung.crcles.account.Account;
+import com.yeonsung.crcles.account.UserAccount;
 import com.yeonsung.crcles.tag.Tag;
 import com.yeonsung.crcles.zone.Zone;
 import lombok.*;
@@ -10,6 +11,11 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@NamedEntityGraph(name = "Club.withAll", attributeNodes = {
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode("zones"),
+        @NamedAttributeNode("managers"),
+        @NamedAttributeNode("members")})
 @Entity
 @Getter
 @Setter
@@ -29,6 +35,12 @@ public class Club {
     @ManyToMany
     private Set<Account> members = new HashSet<>();
 
+    @ManyToMany
+    private Set<Tag> tags = new HashSet<>();
+
+    @ManyToMany
+    private Set<Zone> zones = new HashSet<>();
+
     @Column(unique = true)
     private String path;    // path
 
@@ -43,11 +55,6 @@ public class Club {
     @Lob @Basic(fetch = FetchType.EAGER)
     private String image;   // 이미지
 
-    @ManyToMany
-    private Set<Tag> tags = new HashSet<>();
-
-    @ManyToMany
-    private Set<Zone> zones = new HashSet<>();
 
     private LocalDateTime publishedDateTime;    // 동아리 공개시간
 
@@ -63,7 +70,27 @@ public class Club {
 
     private boolean useBanner;  // 배너 여부
 
-    public void addManager(Account account) {   // 동아리 관리자 권한
+    // 동아리 관리자 권한
+    public void addManager(Account account) {
         this.managers.add(account);
     }
+
+    // 가입여부 확인
+    public boolean isJoinable(UserAccount userAccount) {
+        Account account = userAccount.getAccount();
+        return this.isPublished() && this.isRecruiting()
+                && !this.members.contains(account) && !this.managers.contains(account);
+
+    }
+
+    // 회원여부 확인
+    public boolean isMember(UserAccount userAccount) {
+        return this.members.contains(userAccount.getAccount());
+    }
+
+    // 매니저여부 확인
+    public boolean isManager(UserAccount userAccount) {
+        return this.managers.contains(userAccount.getAccount());
+    }
+
 }
