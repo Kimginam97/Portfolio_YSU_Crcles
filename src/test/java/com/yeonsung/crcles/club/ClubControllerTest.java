@@ -95,7 +95,7 @@ class ClubControllerTest {
         club.setShortDescription("short description");
         club.setFullDescription("<p>full description</p>");
 
-        Account dudurian = accountRepository.findByNickname("keesun");
+        Account dudurian = accountRepository.findByNickname("dudurian");
         clubService.createNewClub(club, dudurian);
 
         mockMvc.perform(get("/club/test-path"))

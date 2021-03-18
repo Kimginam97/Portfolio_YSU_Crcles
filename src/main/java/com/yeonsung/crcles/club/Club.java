@@ -93,4 +93,9 @@ public class Club {
         return this.managers.contains(userAccount.getAccount());
     }
 
+    // 기존 배너이미지
+    public String getImage() {
+        return image != null ? image : "/images/default_banner.jpg";
+    }
+
 }

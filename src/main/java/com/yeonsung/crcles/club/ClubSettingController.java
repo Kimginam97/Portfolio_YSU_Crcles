@@ -3,6 +3,7 @@ package com.yeonsung.crcles.club;
 import com.yeonsung.crcles.account.Account;
 import com.yeonsung.crcles.account.CurrentAccount;
 import com.yeonsung.crcles.club.form.ClubDescriptionForm;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -58,6 +59,41 @@ public class ClubSettingController {
 
     private String getPath(String path) {
         return URLEncoder.encode(path, StandardCharsets.UTF_8);
+    }
+
+    /*
+    * 배너 수정
+    * 배너 활성화 , 비활성화
+    * */
+    @GetMapping("/banner")
+    public String clubImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Club club = clubService.getClubToUpdate(account, path);
+        model.addAttribute("account",account);
+        model.addAttribute("club",club);
+        return "club/settings/banner";
+    }
+
+    @PostMapping("/banner")
+    public String clubImageSubmit(@CurrentAccount Account account, @PathVariable String path,
+                                   String image, RedirectAttributes attributes) {
+        Club club = clubService.getClubToUpdate(account, path);
+        clubService.updateClubImage(club, image);
+        attributes.addFlashAttribute("message", "동아리 이미지를 수정했습니다.");
+        return "redirect:/club/" + getPath(path) + "/settings/banner";
+    }
+
+    @PostMapping("/banner/enable")
+    public String enableClubBanner(@CurrentAccount Account account, @PathVariable String path) {
+        Club club = clubService.getClubToUpdate(account, path);
+        clubService.enableClubBanner(club);
+        return "redirect:/club/" + getPath(path) + "/settings/banner";
+    }
+
+    @PostMapping("/banner/disable")
+    public String disableClubBanner(@CurrentAccount Account account, @PathVariable String path) {
+        Club club = clubService.getClubToUpdate(account, path);
+        clubService.disableClubBanner(club);
+        return "redirect:/club/" + getPath(path) + "/settings/banner";
     }
 
 }

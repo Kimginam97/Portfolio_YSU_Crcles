@@ -56,5 +56,19 @@ public class ClubService {
         modelMapper.map(clubDescriptionForm, club);
     }
 
+    // 동아리 이미지 수정
+    public void updateClubImage(Club club, String image) {
+        club.setImage(image);
+    }
+
+    // 배너활성화
+    public void enableClubBanner(Club club) {
+        club.setUseBanner(true);
+    }
+
+    // 배너비활성화
+    public void disableClubBanner(Club club) {
+        club.setUseBanner(false);
+    }
 
 }
