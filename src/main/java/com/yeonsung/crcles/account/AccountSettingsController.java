@@ -29,13 +29,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.yeonsung.crcles.account.SettingsController.ROOT;
-import static com.yeonsung.crcles.account.SettingsController.SETTINGS;
+import static com.yeonsung.crcles.account.AccountSettingsController.ROOT;
+import static com.yeonsung.crcles.account.AccountSettingsController.SETTINGS;
 
 @Controller
 @RequestMapping(ROOT + SETTINGS)
 @RequiredArgsConstructor
-public class SettingsController {
+public class AccountSettingsController {
 
     static final String ROOT = "/";
     static final String SETTINGS = "settings";

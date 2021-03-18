@@ -1,5 +1,6 @@
 package com.yeonsung.crcles.account;
 
+import com.yeonsung.crcles.club.Club;
 import com.yeonsung.crcles.tag.Tag;
 import com.yeonsung.crcles.zone.Zone;
 import lombok.*;
@@ -112,4 +113,8 @@ public class Account {
         return this.emailCheckTokenGeneratedTime.isBefore(LocalDateTime.now().minusSeconds(1));
     }
 
+    // 동아리 관리자 여부
+    public boolean isManagerOf(Club club) {
+        return club.getManagers().contains(this);
+    }
 }

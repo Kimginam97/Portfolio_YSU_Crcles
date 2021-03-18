@@ -190,6 +190,15 @@ public class AccountService implements UserDetailsService {
         byId.ifPresent(a -> a.getZones().remove(zone));
     }
 
+    // 닉네임을 통해서 회원을 찾아온다
+    public Account getAccount(String nickname) {
+        Account account = accountRepository.findByNickname(nickname);
+        if (account == null) {
+            throw new IllegalArgumentException(nickname + "에 해당하는 사용자가 없습니다.");
+        }
+        return account;
+    }
+
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {

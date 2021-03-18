@@ -62,15 +62,17 @@ public class ClubController {
 
     @GetMapping("/club/{path}")
     public String viewClub(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        model.addAttribute(account);
-        model.addAttribute(clubRepository.findByPath(path));
+        Club club = clubService.getClub(path);
+        model.addAttribute("account",account);
+        model.addAttribute("club",club);
         return "club/view";
     }
 
     @GetMapping("/study/{path}/members")
     public String viewClubMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        model.addAttribute(account);
-        model.addAttribute(clubRepository.findByPath(path));
+        Club club = clubService.getClub(path);
+        model.addAttribute("account",account);
+        model.addAttribute("club",club);
         return "club/members";
     }
 
