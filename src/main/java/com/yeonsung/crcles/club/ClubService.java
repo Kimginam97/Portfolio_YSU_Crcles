@@ -2,6 +2,8 @@ package com.yeonsung.crcles.club;
 
 import com.yeonsung.crcles.account.Account;
 import com.yeonsung.crcles.club.form.ClubDescriptionForm;
+import com.yeonsung.crcles.tag.Tag;
+import com.yeonsung.crcles.zone.Zone;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
@@ -35,9 +37,7 @@ public class ClubService {
         Club club = this.getClub(path);
 
         // 동아리권한을 확인한다
-        if (!account.isManagerOf(club)) {
-            throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
-        }
+        checkIfManager(account,club);
 
         // 동아리 객체 반환
         return club;
@@ -45,9 +45,7 @@ public class ClubService {
 
     public Club getClub(String path) {
         Club club = this.clubRepository.findByPath(path);
-        if (club == null) {
-            throw new IllegalArgumentException(path + "에 해당하는 동아리가 없습니다.");
-        }
+        checkIfExistingStudy(path,club);
 
         return club;
     }
@@ -69,6 +67,62 @@ public class ClubService {
     // 배너비활성화
     public void disableClubBanner(Club club) {
         club.setUseBanner(false);
+    }
+
+
+    /*
+    * 태그 추가
+    * 태그 삭제
+    * 태그와 회원매니저정보 가져오기
+    * */
+    public void addTag(Club club, Tag tag) {
+        club.getTags().add(tag);
+    }
+
+    public void removeTag(Club club, Tag tag) {
+        club.getTags().remove(tag);
+    }
+
+    public Club getClubToUpdateTag(Account account, String path) {
+        Club club = clubRepository.findAccountWithTagsByPath(path);
+        checkIfExistingStudy(path, club);
+        checkIfManager(account, club);
+        return club;
+    }
+
+
+    /*
+    * 지역 추가
+    * 지역 삭제
+    * 지역과 회원매니저정보 가져오기
+    * */
+    public void addZone(Club club, Zone zone) {
+        club.getZones().add(zone);
+    }
+
+    public void removeZone(Club club, Zone zone) {
+        club.getZones().remove(zone);
+    }
+
+    public Club getClubToUpdateZone(Account account, String path) {
+        Club club = clubRepository.findAccountWithZonesByPath(path);
+        checkIfExistingStudy(path, club);
+        checkIfManager(account, club);
+        return club;
+    }
+
+
+
+    private void checkIfManager(Account account, Club club) {
+        if (!account.isManagerOf(club)) {
+            throw new AccessDeniedException("해당 기능을 사용할 수 없습니다.");
+        }
+    }
+
+    private void checkIfExistingStudy(String path, Club club) {
+        if (club == null) {
+            throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
+        }
     }
 
 }

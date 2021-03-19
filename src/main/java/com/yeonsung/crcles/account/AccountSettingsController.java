@@ -11,6 +11,7 @@ import com.yeonsung.crcles.account.validator.PasswordFormValidator;
 import com.yeonsung.crcles.tag.Tag;
 import com.yeonsung.crcles.tag.TagForm;
 import com.yeonsung.crcles.tag.TagRepository;
+import com.yeonsung.crcles.tag.TagService;
 import com.yeonsung.crcles.zone.Zone;
 import com.yeonsung.crcles.zone.ZoneForm;
 import com.yeonsung.crcles.zone.ZoneRepository;
@@ -53,6 +54,7 @@ public class AccountSettingsController {
     private final TagRepository tagRepository;
     private final ObjectMapper objectMapper;
     private final ZoneRepository zoneRepository;
+    private final TagService tagService;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -191,13 +193,8 @@ public class AccountSettingsController {
     @PostMapping(TAGS+ "/add")
     @ResponseBody
     public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
-        String title = tagForm.getTagTitle();
 
-        Tag tag = tagRepository.findByTitle(title);
-        if (tag == null) {
-            tag = tagRepository.save(Tag.builder().title(tagForm.getTagTitle()).build());
-        }
-
+        Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
         accountService.addTag(account, tag);
         return ResponseEntity.ok().build();
     }

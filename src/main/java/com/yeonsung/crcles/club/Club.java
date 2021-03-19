@@ -16,6 +16,12 @@ import java.util.Set;
         @NamedAttributeNode("zones"),
         @NamedAttributeNode("managers"),
         @NamedAttributeNode("members")})
+@NamedEntityGraph(name = "Club.withTagsAndManagers", attributeNodes = {
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode("managers")})
+@NamedEntityGraph(name = "Club.withZonesAndManagers", attributeNodes = {
+        @NamedAttributeNode("zones"),
+        @NamedAttributeNode("managers")})
 @Entity
 @Getter
 @Setter
@@ -97,5 +103,11 @@ public class Club {
     public String getImage() {
         return image != null ? image : "/images/default_banner.jpg";
     }
+
+    // 회원추가
+    public void addMember(Account account) {
+        this.members.add(account);
+    }
+
 
 }
