@@ -269,4 +269,41 @@ public class ClubSettingController {
         return "redirect:/club/" + getPath(path) + "/settings/club";
     }
 
+    /*
+    * 동아리 경로 수정
+    * 동아리 제목 수정
+    * */
+
+    @PostMapping("/club/path")
+    public String updateClubPath(@CurrentAccount Account account, @PathVariable String path, String newPath,
+                                  Model model, RedirectAttributes attributes) {
+        Club club = clubService.getStudyToUpdateStatus(account, path);
+        if (!clubService.isValidPath(newPath)) {
+            model.addAttribute("account",account);
+            model.addAttribute("club",club);
+            model.addAttribute("clubPathError", "해당 동아리 경로는 사용할 수 없습니다. 다른 값을 입력하세요.");
+            return "club/settings/club";
+        }
+
+        clubService.updateClubPath(club, newPath);
+        attributes.addFlashAttribute("message", "동아리 경로를 수정했습니다.");
+        return "redirect:/club/" + getPath(newPath) + "/settings/club";
+    }
+
+    @PostMapping("/club/title")
+    public String updateStudyTitle(@CurrentAccount Account account, @PathVariable String path, String newTitle,
+                                   Model model, RedirectAttributes attributes) {
+        Club club = clubService.getStudyToUpdateStatus(account, path);
+        if (!clubService.isValidTitle(newTitle)) {
+            model.addAttribute("account",account);
+            model.addAttribute("club",club);
+            model.addAttribute("clubTitleError", "동아리 이름을 다시 입력하세요.");
+            return "club/settings/club";
+        }
+
+        clubService.updateClubTitle(club, newTitle);
+        attributes.addFlashAttribute("message", "동아리 이름을 수정했습니다.");
+        return "redirect:/club/" + getPath(path) + "/settings/club";
+    }
+
 }

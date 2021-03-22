@@ -10,6 +10,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.yeonsung.crcles.club.form.ClubForm.VALID_PATH_PATTERN;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -154,6 +156,34 @@ public class ClubService {
 
     public void stopRecruit(Club club) {
         club.stopRecruit();
+    }
+
+
+    /*
+    * Path(경로) 검증후 가져온다
+    * Path(경로) 수정
+    * 제목 검증
+    * 제목 수정
+    * */
+
+    public boolean isValidPath(String newPath) {
+        if (!newPath.matches(VALID_PATH_PATTERN)) {
+            return false;
+        }
+
+        return !clubRepository.existsByPath(newPath);
+    }
+
+    public void updateClubPath(Club club, String newPath) {
+        club.setPath(newPath);
+    }
+
+    public boolean isValidTitle(String newTitle) {
+        return newTitle.length() <= 50;
+    }
+
+    public void updateClubTitle(Club club, String newTitle) {
+        club.setTitle(newTitle);
     }
 
 }

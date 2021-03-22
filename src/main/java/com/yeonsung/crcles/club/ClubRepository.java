@@ -9,6 +9,8 @@ public interface ClubRepository extends JpaRepository<Club,Long> {
 
     boolean existsByPath(String path);  // path 존재하는지 여부
 
+    boolean existsByTitle(String newTitle); // 새로운 제목이 존재하는지?
+
     @EntityGraph(value = "Club.withAll", type = EntityGraph.EntityGraphType.LOAD)
     Club findByPath(String path);   // 해당 정보의 path 가져올때 연관된 엔티티 그래프 값도 가져온다
 
@@ -20,4 +22,6 @@ public interface ClubRepository extends JpaRepository<Club,Long> {
 
     @EntityGraph(value = "Club.withManagers", type = EntityGraph.EntityGraphType.FETCH)
     Club findClubWithManagersByPath(String path);   // 동아리 매니저 권한만 가져오기
+
+
 }
