@@ -272,6 +272,7 @@ public class ClubSettingController {
     /*
     * 동아리 경로 수정
     * 동아리 제목 수정
+    * 동아리 삭제
     * */
 
     @PostMapping("/club/path")
@@ -304,6 +305,13 @@ public class ClubSettingController {
         clubService.updateClubTitle(club, newTitle);
         attributes.addFlashAttribute("message", "동아리 이름을 수정했습니다.");
         return "redirect:/club/" + getPath(path) + "/settings/club";
+    }
+
+    @PostMapping("/club/remove")
+    public String removeStudy(@CurrentAccount Account account, @PathVariable String path) {
+        Club club = clubService.getStudyToUpdateStatus(account, path);
+        clubService.remove(club);
+        return "redirect:/";
     }
 
 }

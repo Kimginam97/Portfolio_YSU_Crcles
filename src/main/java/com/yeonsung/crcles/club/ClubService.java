@@ -164,6 +164,7 @@ public class ClubService {
     * Path(경로) 수정
     * 제목 검증
     * 제목 수정
+    * 동아리 삭제
     * */
 
     public boolean isValidPath(String newPath) {
@@ -184,6 +185,14 @@ public class ClubService {
 
     public void updateClubTitle(Club club, String newTitle) {
         club.setTitle(newTitle);
+    }
+
+    public void remove(Club club) {
+        if (club.isRemovable()) {
+            clubRepository.delete(club);
+        } else {
+            throw new IllegalArgumentException("동아리를 삭제할 수 없습니다.");
+        }
     }
 
 }

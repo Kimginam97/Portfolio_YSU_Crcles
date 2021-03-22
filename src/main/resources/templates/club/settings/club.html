@@ -79,7 +79,7 @@
                         동아리 경로를 수정하면 이전에 사용하던 경로로 동아리에 접근할 수 없으니 주의하세요. <br/>
                     </div>
                     <div class="form-group">
-                        <input id="path" type="text" name="newPath" th:value="${newPath}" class="form-control"
+                        <input id="path" type="text" name="newPath" th:value="${club.path}" class="form-control"
                                placeholder="예) study-path" aria-describedby="pathHelp" required>
                         <small id="pathHelp" class="form-text text-muted">
                             공백없이 문자, 숫자, 대시(-)와 언더바(_)만 3자 이상 20자 이내로 입력하세요. 스터디 홈 주소에 사용합니다. 예) /club/<b>club-path</b>
@@ -117,11 +117,11 @@
             </div>
 
             <hr/>
-            <div class="row">
-                <h5 class="col-sm-12 text-danger">스터디 삭제</h5>
+            <div class="row" th:if="${club.isRemovable()}">
+                <h5 class="col-sm-12 text-danger">동아리 삭제</h5>
                 <form class="col-sm-12" action="#" th:action="@{'/club/' + ${club.getPath()} + '/settings/club/remove'}" method="post" novalidate>
                     <div class="alert alert-danger" role="alert">
-                        동아리를 삭제하면 스터디 관련 모든 기록을 삭제하며 복구할 수 없습니다. <br/>
+                        동아리를 삭제하면 동아리 관련 모든 기록을 삭제하며 복구할 수 없습니다. <br/>
                         <b>다음에 해당하는 동아리는 자동으로 삭제 됩니다.</b>
                         <ul>
                             <li>만든지 1주일이 지난 비공개 스터디</li>
@@ -131,6 +131,17 @@
                     </div>
                     <div class="form-group">
                         <button class="btn btn-outline-danger" type="submit" aria-describedby="submitHelp">동아리 삭제</button>
+                    </div>
+                </form>
+            </div>
+            <div class="row" th:if="${!club.isRemovable()}">
+                <h5 class="col-sm-12 text-danger">동아리 삭제</h5>
+                <form class="col-sm-12" action="#" th:action="@{'/club/' + ${club.getPath()} + '/settings/club/remove'}" method="post" novalidate>
+                    <div class="alert alert-danger" role="alert">
+                        공개 중이고 모임을 했던 동아리는 삭제할 수 없습니다.
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-danger" type="submit" aria-describedby="submitHelp" disabled>동아리 삭제</button>
                     </div>
                 </form>
             </div>
