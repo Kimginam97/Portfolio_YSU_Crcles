@@ -84,7 +84,7 @@ public class ClubService {
     }
 
     public Club getClubToUpdateTag(Account account, String path) {
-        Club club = clubRepository.findAccountWithTagsByPath(path);
+        Club club = clubRepository.findClubWithTagsByPath(path);
         checkIfExistingStudy(path, club);
         checkIfManager(account, club);
         return club;
@@ -105,7 +105,7 @@ public class ClubService {
     }
 
     public Club getClubToUpdateZone(Account account, String path) {
-        Club club = clubRepository.findAccountWithZonesByPath(path);
+        Club club = clubRepository.findClubWithZonesByPath(path);
         checkIfExistingStudy(path, club);
         checkIfManager(account, club);
         return club;
@@ -123,6 +123,37 @@ public class ClubService {
         if (club == null) {
             throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
         }
+    }
+
+
+    /*
+    * 동아리 모집 상태
+    * 동아리 공개
+    * 동아리 종료
+    * 동아리 모집시작
+    * 동아리 모집종료
+    * */
+    public Club getStudyToUpdateStatus(Account account, String path) {
+        Club club = clubRepository.findClubWithManagersByPath(path);
+        checkIfExistingStudy(path, club);
+        checkIfManager(account, club);
+        return club;
+    }
+
+    public void publish(Club club) {
+        club.publish();
+    }
+
+    public void close(Club club) {
+        club.close();
+    }
+
+    public void startRecruit(Club club) {
+        club.startRecruit();
+    }
+
+    public void stopRecruit(Club club) {
+        club.stopRecruit();
     }
 
 }

@@ -208,4 +208,65 @@ public class ClubSettingController {
         return ResponseEntity.ok().build();
     }
 
+    /*
+    * 동아리 설정폼
+    * 동아리 공개
+    * 동아리 종료
+    * 동아리 인원모집시작
+    * 동아리 인원모집종료
+    * */
+    @GetMapping("/club")
+    public String clubSettingForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Club club = clubService.getClubToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(club);
+        return "club/settings/club";
+    }
+
+    @PostMapping("/club/publish")
+    public String publishClub(@CurrentAccount Account account, @PathVariable String path,
+                               RedirectAttributes attributes) {
+        Club club = clubService.getStudyToUpdateStatus(account, path);
+        clubService.publish(club);
+        attributes.addFlashAttribute("message", "동아리를 공개했습니다!");
+        return "redirect:/club/" + getPath(path) + "/settings/club";
+    }
+
+    @PostMapping("/club/close")
+    public String closeClub(@CurrentAccount Account account, @PathVariable String path,
+                             RedirectAttributes attributes) {
+        Club club = clubService.getStudyToUpdateStatus(account, path);
+        clubService.close(club);
+        attributes.addFlashAttribute("message", "돟아리를 종료했습니다.");
+        return "redirect:/club/" + getPath(path) + "/settings/club";
+    }
+
+    @PostMapping("/recruit/start")
+    public String startRecruit(@CurrentAccount Account account, @PathVariable String path,
+                               RedirectAttributes attributes) {
+        Club club = clubService.getStudyToUpdateStatus(account, path);
+        if (!club.canUpdateRecruiting()) {
+            attributes.addFlashAttribute("message", "1시간 안에 인원 모집 설정을 여러번 변경할 수 없습니다.");
+            return "redirect:/club/" + getPath(path) + "/settings/club";
+        }
+
+        clubService.startRecruit(club);
+        attributes.addFlashAttribute("message", "인원 모집을 시작합니다.");
+        return "redirect:/club/" + getPath(path) + "/settings/club";
+    }
+
+    @PostMapping("/recruit/stop")
+    public String stopRecruit(@CurrentAccount Account account, @PathVariable String path,
+                              RedirectAttributes attributes) {
+        Club club = clubService.getStudyToUpdateStatus(account, path);
+        if (!club.canUpdateRecruiting()) {
+            attributes.addFlashAttribute("message", "1시간 안에 인원 모집 설정을 여러번 변경할 수 없습니다.");
+            return "redirect:/club/" + getPath(path) + "/settings/club";
+        }
+
+        clubService.stopRecruit(club);
+        attributes.addFlashAttribute("message", "인원 모집을 종료합니다.");
+        return "redirect:/club/" + getPath(path) + "/settings/club";
+    }
+
 }
