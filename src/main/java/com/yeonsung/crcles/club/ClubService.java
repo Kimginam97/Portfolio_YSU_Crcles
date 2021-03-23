@@ -195,4 +195,17 @@ public class ClubService {
         }
     }
 
+    /*
+    * 동아리 회원참가
+    * 동아리 회원탈퇴
+    * */
+
+    public void addMember(Club club, Account account) {
+        club.addMember(account);
+    }
+
+    public void removeMember(Club club, Account account) {
+        club.removeMember(account);
+    }
+
 }

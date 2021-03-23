@@ -194,7 +194,7 @@
                 </span>
             <span sec:authorize="isAuthenticated()" th:if="${club.isJoinable(#authentication.principal)}"
                   class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-primary" th:href="@{'/club/' + ${club.path} + '/join'}">
+                    <a class="btn btn-primary" th:href="@{'/club/' + ${club.path} + '/join'}" >
                         동아리 가입
                     </a>
                     <a class="btn btn-outline-primary" th:href="@{'/club/' + ${club.path} + '/members'}"

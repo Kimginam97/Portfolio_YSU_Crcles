@@ -68,12 +68,32 @@ public class ClubController {
         return "club/view";
     }
 
-    @GetMapping("/study/{path}/members")
+    @GetMapping("/club/{path}/members")
     public String viewClubMembers(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Club club = clubService.getClub(path);
         model.addAttribute("account",account);
         model.addAttribute("club",club);
         return "club/members";
+    }
+
+    /*
+    * 동아리 참가
+    * 동아리 탈퇴
+    * TODO : POST 요청으로 바꾸기
+    * */
+
+    @GetMapping("/club/{path}/join")
+    public String joinClub(@CurrentAccount Account account, @PathVariable String path) {
+        Club club = clubRepository.findStudyWithMembersByPath(path);
+        clubService.addMember(club, account);
+        return "redirect:/club/" + club.getEncodedPath() + "/members";
+    }
+
+    @GetMapping("/club/{path}/leave")
+    public String leaveClub(@CurrentAccount Account account, @PathVariable String path) {
+        Club club = clubRepository.findStudyWithMembersByPath(path);
+        clubService.removeMember(club, account);
+        return "redirect:/club/" + club.getEncodedPath() + "/members";
     }
 
 

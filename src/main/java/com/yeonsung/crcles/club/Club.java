@@ -7,6 +7,8 @@ import com.yeonsung.crcles.zone.Zone;
 import lombok.*;
 
 import javax.persistence.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +26,8 @@ import java.util.Set;
         @NamedAttributeNode("managers")})
 @NamedEntityGraph(name = "Club.withManagers", attributeNodes = {
         @NamedAttributeNode("managers")})
+@NamedEntityGraph(name = "Club.withMembers", attributeNodes = {
+        @NamedAttributeNode("members")})
 @Entity
 @Getter
 @Setter
@@ -106,10 +110,6 @@ public class Club {
         return image != null ? image : "/images/default_banner.jpg";
     }
 
-    // 동아리 회원추가
-    public void addMember(Account account) {
-        this.members.add(account);
-    }
 
     // 동아리 출시여부
     public void publish() {
@@ -159,6 +159,21 @@ public class Club {
     // 동아리 공개여부
     public boolean isRemovable() {
         return !this.published;
+    }
+
+    // 동아리 회원추가
+    public void addMember(Account account) {
+        this.members.add(account);
+    }
+
+    // 동아리 회원삭제
+    public void removeMember(Account account) {
+        this.getMembers().remove(account);
+    }
+
+    // 경로 가져오기
+    public String getEncodedPath() {
+        return URLEncoder.encode(this.path, StandardCharsets.UTF_8);
     }
 
 }

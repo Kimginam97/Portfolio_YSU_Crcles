@@ -67,11 +67,7 @@ public class ClubSettingController {
 
         clubService.updateClubDescription(club,clubDescriptionForm);
         attributes.addFlashAttribute("message", "동아리 소개를 수정했습니다.");
-        return "redirect:/club/" + getPath(path) + "/settings/description";
-    }
-
-    private String getPath(String path) {
-        return URLEncoder.encode(path, StandardCharsets.UTF_8);
+        return "redirect:/club/" + club.getEncodedPath() + "/settings/description";
     }
 
 
@@ -94,21 +90,21 @@ public class ClubSettingController {
         Club club = clubService.getClubToUpdate(account, path);
         clubService.updateClubImage(club, image);
         attributes.addFlashAttribute("message", "동아리 이미지를 수정했습니다.");
-        return "redirect:/club/" + getPath(path) + "/settings/banner";
+        return "redirect:/club/" + club.getEncodedPath() + "/settings/banner";
     }
 
     @PostMapping("/banner/enable")
     public String enableClubBanner(@CurrentAccount Account account, @PathVariable String path) {
         Club club = clubService.getClubToUpdate(account, path);
         clubService.enableClubBanner(club);
-        return "redirect:/club/" + getPath(path) + "/settings/banner";
+        return "redirect:/club/" + club.getEncodedPath() + "/settings/banner";
     }
 
     @PostMapping("/banner/disable")
     public String disableClubBanner(@CurrentAccount Account account, @PathVariable String path) {
         Club club = clubService.getClubToUpdate(account, path);
         clubService.disableClubBanner(club);
-        return "redirect:/club/" + getPath(path) + "/settings/banner";
+        return "redirect:/club/" + club.getEncodedPath() + "/settings/banner";
     }
 
 
@@ -229,7 +225,7 @@ public class ClubSettingController {
         Club club = clubService.getStudyToUpdateStatus(account, path);
         clubService.publish(club);
         attributes.addFlashAttribute("message", "동아리를 공개했습니다!");
-        return "redirect:/club/" + getPath(path) + "/settings/club";
+        return "redirect:/club/" +club.getEncodedPath() + "/settings/club";
     }
 
     @PostMapping("/club/close")
@@ -238,7 +234,7 @@ public class ClubSettingController {
         Club club = clubService.getStudyToUpdateStatus(account, path);
         clubService.close(club);
         attributes.addFlashAttribute("message", "돟아리를 종료했습니다.");
-        return "redirect:/club/" + getPath(path) + "/settings/club";
+        return "redirect:/club/" + club.getEncodedPath() + "/settings/club";
     }
 
     @PostMapping("/recruit/start")
@@ -247,12 +243,12 @@ public class ClubSettingController {
         Club club = clubService.getStudyToUpdateStatus(account, path);
         if (!club.canUpdateRecruiting()) {
             attributes.addFlashAttribute("message", "1시간 안에 인원 모집 설정을 여러번 변경할 수 없습니다.");
-            return "redirect:/club/" + getPath(path) + "/settings/club";
+            return "redirect:/club/" + club.getEncodedPath() + "/settings/club";
         }
 
         clubService.startRecruit(club);
         attributes.addFlashAttribute("message", "인원 모집을 시작합니다.");
-        return "redirect:/club/" + getPath(path) + "/settings/club";
+        return "redirect:/club/" + club.getEncodedPath() + "/settings/club";
     }
 
     @PostMapping("/recruit/stop")
@@ -261,12 +257,12 @@ public class ClubSettingController {
         Club club = clubService.getStudyToUpdateStatus(account, path);
         if (!club.canUpdateRecruiting()) {
             attributes.addFlashAttribute("message", "1시간 안에 인원 모집 설정을 여러번 변경할 수 없습니다.");
-            return "redirect:/club/" + getPath(path) + "/settings/club";
+            return "redirect:/club/" + club.getEncodedPath() + "/settings/club";
         }
 
         clubService.stopRecruit(club);
         attributes.addFlashAttribute("message", "인원 모집을 종료합니다.");
-        return "redirect:/club/" + getPath(path) + "/settings/club";
+        return "redirect:/club/" + club.getEncodedPath() + "/settings/club";
     }
 
     /*
@@ -288,7 +284,7 @@ public class ClubSettingController {
 
         clubService.updateClubPath(club, newPath);
         attributes.addFlashAttribute("message", "동아리 경로를 수정했습니다.");
-        return "redirect:/club/" + getPath(newPath) + "/settings/club";
+        return "redirect:/club/" + club.getEncodedPath() + "/settings/club";
     }
 
     @PostMapping("/club/title")
@@ -304,7 +300,7 @@ public class ClubSettingController {
 
         clubService.updateClubTitle(club, newTitle);
         attributes.addFlashAttribute("message", "동아리 이름을 수정했습니다.");
-        return "redirect:/club/" + getPath(path) + "/settings/club";
+        return "redirect:/club/" + club.getEncodedPath() + "/settings/club";
     }
 
     @PostMapping("/club/remove")

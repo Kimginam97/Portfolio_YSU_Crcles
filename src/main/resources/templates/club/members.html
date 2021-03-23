@@ -3,10 +3,10 @@
 <head th:replace="fragments.html :: head"></head>
 <body class="bg-light">
 <div th:replace="fragments.html :: main-nav"></div>
-<div th:replace="fragments.html :: study-banner"></div>
+<div th:replace="fragments.html :: club-banner"></div>
 <div class="container">
     <div th:replace="fragments.html :: club-info"></div>
-    <div th:replace="fragments.html :: club-menu(studyMenu='members')"></div>
+    <div th:replace="fragments.html :: club-menu(clubMenu='members')"></div>
 
     <div th:replace="fragments.html :: member-list(members=${club.managers},isManager=${true})"></div>
     <div th:replace="fragments.html :: member-list(members=${club.members},isManager=${false})"></div>
