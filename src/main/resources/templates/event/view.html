@@ -30,7 +30,8 @@
                     </span>
                 </span>
         </div>
-        <div class="modal fade" id="disenroll" tabindex="-1" role="dialog" aria-labelledby="leaveTitle" aria-hidden="true">
+        <div class="modal fade" id="disenroll" tabindex="-1" role="dialog" aria-labelledby="leaveTitle"
+             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -46,14 +47,16 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                        <form th:action="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/leave'}" method="post">
+                        <form th:action="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/leave'}"
+                              method="post">
                             <button class="btn btn-primary" type="submit" aria-describedby="submitHelp">확인</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="enroll" tabindex="-1" role="dialog" aria-labelledby="enrollmentTitle" aria-hidden="true">
+        <div class="modal fade" id="enroll" tabindex="-1" role="dialog" aria-labelledby="enrollmentTitle"
+             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -69,7 +72,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                        <form th:action="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/enroll'}" method="post">
+                        <form th:action="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/enroll'}"
+                              method="post">
                             <button class="btn btn-primary" type="submit" aria-describedby="submitHelp">확인</button>
                         </form>
                     </div>
@@ -105,10 +109,13 @@
                         <td>
                             <a th:href="@{'/profile/' + ${enroll.account.nickname}}"
                                class="text-decoration-none">
-                                <svg th:if="${#strings.isEmpty(enroll.account?.profileImage)}" data-jdenticon-value="nickname"
-                                     th:data-jdenticon-value="${enroll.account.nickname}" width="24" height="24" class="rounded border bg-light"></svg>
+                                <svg th:if="${#strings.isEmpty(enroll.account?.profileImage)}"
+                                     data-jdenticon-value="nickname"
+                                     th:data-jdenticon-value="${enroll.account.nickname}" width="24" height="24"
+                                     class="rounded border bg-light"></svg>
                                 <img th:if="${!#strings.isEmpty(enroll.account?.profileImage)}"
-                                     th:src="${enroll.account?.profileImage}" width="24" height="24" class="rounded border"/>
+                                     th:src="${enroll.account?.profileImage}" width="24" height="24"
+                                     class="rounded border"/>
                                 <span th:text="${enroll.account.nickname}"></span>
                             </a>
                         </td>
@@ -121,15 +128,17 @@
                         </td>
                         <td th:if="${club.isManager(#authentication.principal)}">
                             <a th:if="${event.isAcceptable(enroll)}" href="#" class="text-decoration-none"
-                               th:href="@{'/club/' + ${study.path} + '/events/' + ${event.id} + '/enrollments/' + ${enroll.id} + '/accept'}" >신청 수락</a>
+                               th:href="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/enrollments/' + ${enroll.id} + '/accept'}">신청
+                                수락</a>
                             <a th:if="${event.isRejectable(enroll)}" href="#" class="text-decoration-none"
-                               th:href="@{'/club/' + ${study.path} + '/events/' + ${event.id} + '/enrollments/' + ${enroll.id} + '/reject'}">취소</a>
+                               th:href="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/enrollments/' + ${enroll.id} + '/reject'}">취소</a>
                         </td>
                         <td th:if="${club.isManager(#authentication.principal)}">
                             <a th:if="${enroll.accepted && !enroll.attended}" href="#" class="text-decoration-none"
                                th:href="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/enrollments/' + ${enroll.id} + '/checkin'}">체크인</a>
                             <a th:if="${enroll.accepted && enroll.attended}" href="#" class="text-decoration-none"
-                               th:href="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/enrollments/' + ${enroll.id} + '/cancel-checkin'}">체크인 취소</a>
+                               th:href="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/enrollments/' + ${enroll.id} + '/cancel-checkin'}">체크인
+                                취소</a>
                         </td>
                     </tr>
                     </tbody>
@@ -165,19 +174,20 @@
 
             <dt class="font-weight-light">모임장</dt>
             <dd>
-                <a th:href="@{'/profile/' + ${event.createdBy.nickname}}" class="text-decoration-none">
+                <a th:href="@{'/profile/' + ${event.createdBy?.nickname}}" class="text-decoration-none">
                     <svg th:if="${#strings.isEmpty(event.createdBy?.profileImage)}"
-                         th:data-jdenticon-value="${event.createdBy.nickname}" width="24" height="24" class="rounded border bg-light"></svg>
+                         th:data-jdenticon-value="${event.createdBy?.nickname}" width="24" height="24"
+                         class="rounded border bg-light"></svg>
                     <img th:if="${!#strings.isEmpty(event.createdBy?.profileImage)}"
                          th:src="${event.createdBy?.profileImage}" width="24" height="24" class="rounded border"/>
-                    <span th:text="${event.createdBy.nickname}"></span>
+                    <span th:text="${event.createdBy?.nickname}"></span>
                 </a>
             </dd>
 
             <dt th:if="${club.isManager(#authentication.principal)}" class="font-weight-light">모임 관리</dt>
             <dd th:if="${club.isManager(#authentication.principal)}">
                 <a class="btn btn-outline-primary btn-sm my-1"
-                   th:href="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/edit'}" >
+                   th:href="@{'/club/' + ${club.path} + '/events/' + ${event.id} + '/edit'}">
                     모임 수정
                 </a> <br/>
                 <button class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#cancel">
@@ -185,7 +195,8 @@
                 </button>
             </dd>
         </dl>
-        <div class="modal fade" id="cancel" tabindex="-1" role="dialog" aria-labelledby="cancelTitle" aria-hidden="true">
+        <div class="modal fade" id="cancel" tabindex="-1" role="dialog" aria-labelledby="cancelTitle"
+             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -211,25 +222,6 @@
     </div>
     <div th:replace="fragments.html :: footer"></div>
 </div>
-<script src="/node_modules/moment/min/moment-with-locales.min.js"></script>
-<script type="application/javascript">
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-
-        moment.locale('ko');
-        $(".date-time").text(function(index, dateTime) {
-            return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LLL');
-        });
-        $(".date").text(function(index, dateTime) {
-            return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LL');
-        });
-        $(".weekday").text(function(index, dateTime) {
-            return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('dddd');
-        });
-        $(".time").text(function(index, dateTime) {
-            return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LT');
-        });
-    })
-</script>
+<script th:replace="fragments.html :: date-time"></script>
 </body>
 </html>

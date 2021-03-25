@@ -3,6 +3,7 @@ package com.yeonsung.crcles.event;
 import com.yeonsung.crcles.account.Account;
 import com.yeonsung.crcles.account.CurrentAccount;
 import com.yeonsung.crcles.club.Club;
+import com.yeonsung.crcles.club.ClubRepository;
 import com.yeonsung.crcles.club.ClubService;
 import com.yeonsung.crcles.event.form.EventForm;
 import com.yeonsung.crcles.event.validator.EventValidator;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/club/{path}")
@@ -26,6 +30,7 @@ public class EventController {
     private final ModelMapper modelMapper;
     private final EventValidator eventValidator;
     private final EventRepository eventRepository;
+    private final ClubRepository clubRepository;
 
     @InitBinder("eventForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -60,6 +65,7 @@ public class EventController {
 
     /*
     * 동아리 모임조회
+    * 동아리 모임목록조회
     * */
     @GetMapping("/events/{id}")
     public String getEvent(@CurrentAccount Account account, @PathVariable String path, @PathVariable Long id,
@@ -68,6 +74,29 @@ public class EventController {
         model.addAttribute(eventRepository.findById(id).orElseThrow());
         model.addAttribute(clubService.getClub(path));
         return "event/view";
+    }
+
+    @GetMapping("/events")
+    public String viewClubEvents(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Club club = clubService.getClub(path);
+        model.addAttribute("account",account);
+        model.addAttribute("club",club);
+
+        List<Event> events = eventRepository.findByClubOrderByStartDateTime(club);
+        List<Event> newEvents = new ArrayList<>();
+        List<Event> oldEvents = new ArrayList<>();
+        events.forEach(e -> {
+            if (e.getEndDateTime().isBefore(LocalDateTime.now())) {
+                oldEvents.add(e);
+            } else {
+                newEvents.add(e);
+            }
+        });
+
+        model.addAttribute("newEvents", newEvents);
+        model.addAttribute("oldEvents", oldEvents);
+
+        return "club/events";
     }
 
 }
