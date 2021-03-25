@@ -1,5 +1,6 @@
 package com.yeonsung.crcles.event.validator;
 
+import com.yeonsung.crcles.event.Event;
 import com.yeonsung.crcles.event.form.EventForm;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -45,5 +46,12 @@ public class EventValidator implements Validator {
     private boolean isNotValidEndDateTime(EventForm eventForm) {
         LocalDateTime endDateTime = eventForm.getEndDateTime();
         return endDateTime.isBefore(eventForm.getStartDateTime()) || endDateTime.isBefore(eventForm.getEndEnrollmentDateTime());
+    }
+
+    // 모집인원수가 참가인원수보다 커야한다
+    public void validateUpdateForm(EventForm eventForm, Event event, Errors errors) {
+        if (eventForm.getLimitOfEnrollments() < event.getNumberOfAcceptedEnrollments()) {
+            errors.rejectValue("limitOfEnrollments", "wrong.value", "확인된 참가 신청보다 모집 인원 수가 커야 합니다.");
+        }
     }
 }

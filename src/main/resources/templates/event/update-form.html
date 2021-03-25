@@ -5,7 +5,8 @@
 <nav th:replace="fragments.html :: main-nav"></nav>
 <div th:replace="fragments.html :: club-banner"></div>
 <div class="container">
-    <div th:replace="fragments.html :: event-form (mode='new', action='/club/' + ${club.path} + '/new-event/')"></div>
+    <div th:replace="fragments.html :: event-form (mode='edit', action='/club/' + ${club.path}
+        + '/events/' + ${event.id} + '/edit')"></div>
     <div th:replace="fragments.html :: footer"></div>
 </div>
 <script th:replace="fragments.html :: form-validation"></script>
