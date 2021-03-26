@@ -17,6 +17,7 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final ModelMapper modelMapper;
+    private final EnrollmentRepository enrollmentRepository;
 
     /*
     * 모임생성
@@ -32,10 +33,33 @@ public class EventService {
 
     public void updateEvent(Event event, EventForm eventForm) {
         modelMapper.map(eventForm, event);
+        event.acceptWaitingList();
     }
 
     public void deleteEvent(Event event) {
         eventRepository.delete(event);
+    }
+
+    /*
+    * 새로운 모집 참가자 추가
+    * 모집 참가자 취소
+    * */
+    public void newEnrollment(Event event, Account account) {
+        if (!enrollmentRepository.existsByEventAndAccount(event, account)) {
+            Enrollment enrollment = new Enrollment();
+            enrollment.setEnrolledAt(LocalDateTime.now());
+            enrollment.setAccepted(event.isAbleToAcceptWaitingEnrollment());
+            enrollment.setAccount(account);
+            event.addEnrollment(enrollment);
+            enrollmentRepository.save(enrollment);
+        }
+    }
+
+    public void cancelEnrollment(Event event, Account account) {
+        Enrollment enrollment = enrollmentRepository.findByEventAndAccount(event, account);
+        event.removeEnrollment(enrollment);
+        enrollmentRepository.delete(enrollment);
+        event.acceptNextWaitingEnrollment();
     }
 
 }

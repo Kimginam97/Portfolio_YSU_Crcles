@@ -143,4 +143,25 @@ public class EventController {
         return "redirect:/club/" + club.getEncodedPath() + "/events";
     }
 
+
+    /*
+    * 모집인원참가자
+    * 모집인원취소
+    * */
+    @PostMapping("/events/{id}/enroll")
+    public String newEnrollment(@CurrentAccount Account account,
+                                @PathVariable String path, @PathVariable Long id) {
+        Club club = clubService.getClubToEnroll(path);
+        eventService.newEnrollment(eventRepository.findById(id).orElseThrow(), account);
+        return "redirect:/club/" + club.getEncodedPath() +  "/events/" + id;
+    }
+
+    @PostMapping("/events/{id}/disenroll")
+    public String cancelEnrollment(@CurrentAccount Account account,
+                                   @PathVariable String path, @PathVariable Long id) {
+        Club club = clubService.getClubToEnroll(path);
+        eventService.cancelEnrollment(eventRepository.findById(id).orElseThrow(), account);
+        return "redirect:/club/" + club.getEncodedPath() +  "/events/" + id;
+    }
+
 }

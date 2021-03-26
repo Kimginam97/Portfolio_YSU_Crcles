@@ -47,7 +47,7 @@ public class ClubService {
 
     public Club getClub(String path) {
         Club club = this.clubRepository.findByPath(path);
-        checkIfExistingStudy(path,club);
+        checkIfExistingClub(path,club);
 
         return club;
     }
@@ -87,7 +87,7 @@ public class ClubService {
 
     public Club getClubToUpdateTag(Account account, String path) {
         Club club = clubRepository.findClubWithTagsByPath(path);
-        checkIfExistingStudy(path, club);
+        checkIfExistingClub(path, club);
         checkIfManager(account, club);
         return club;
     }
@@ -108,7 +108,7 @@ public class ClubService {
 
     public Club getClubToUpdateZone(Account account, String path) {
         Club club = clubRepository.findClubWithZonesByPath(path);
-        checkIfExistingStudy(path, club);
+        checkIfExistingClub(path, club);
         checkIfManager(account, club);
         return club;
     }
@@ -121,7 +121,7 @@ public class ClubService {
         }
     }
 
-    private void checkIfExistingStudy(String path, Club club) {
+    private void checkIfExistingClub(String path, Club club) {
         if (club == null) {
             throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
         }
@@ -137,7 +137,7 @@ public class ClubService {
     * */
     public Club getStudyToUpdateStatus(Account account, String path) {
         Club club = clubRepository.findClubWithManagersByPath(path);
-        checkIfExistingStudy(path, club);
+        checkIfExistingClub(path, club);
         checkIfManager(account, club);
         return club;
     }
@@ -206,6 +206,13 @@ public class ClubService {
 
     public void removeMember(Club club, Account account) {
         club.removeMember(account);
+    }
+
+    // 동아리 정보 가져오기
+    public Club getClubToEnroll(String path) {
+        Club club = clubRepository.findClubOnlyByPath(path);
+        checkIfExistingClub(path, club);
+        return club;
     }
 
 }

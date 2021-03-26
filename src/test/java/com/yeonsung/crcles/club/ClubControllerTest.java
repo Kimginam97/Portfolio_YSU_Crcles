@@ -24,14 +24,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @RequiredArgsConstructor
-class ClubControllerTest {
+public class ClubControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
-    @Autowired ClubService clubService;
-    @Autowired ClubRepository clubRepository;
+    protected MockMvc mockMvc;
+    @Autowired protected ClubService clubService;
+    @Autowired protected ClubRepository clubRepository;
     @Autowired
-    AccountRepository accountRepository;
+    protected AccountRepository accountRepository;
 
     @AfterEach
     void afterEach() {
