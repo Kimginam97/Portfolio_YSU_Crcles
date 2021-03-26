@@ -21,6 +21,7 @@ public class EventService {
     /*
     * 모임생성
     * 모임수정
+    * 모임삭제
     * */
     public Event createEvent(Event event, Club club, Account account) {
         event.setCreatedBy(account);
@@ -31,6 +32,10 @@ public class EventService {
 
     public void updateEvent(Event event, EventForm eventForm) {
         modelMapper.map(eventForm, event);
+    }
+
+    public void deleteEvent(Event event) {
+        eventRepository.delete(event);
     }
 
 }

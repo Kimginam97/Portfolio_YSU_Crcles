@@ -100,8 +100,9 @@ public class EventController {
     }
 
     /*
-    * 동아리모임수정폼
-    * 동아리모임수정
+    * 동아리모임 수정폼
+    * 동아리모임 수정
+    * 동아리모임 삭제
     * */
     @GetMapping("/events/{id}/edit")
     public String updateEventForm(@CurrentAccount Account account,
@@ -133,6 +134,13 @@ public class EventController {
 
         eventService.updateEvent(event, eventForm);
         return "redirect:/club/" + club.getEncodedPath() +  "/events/" + event.getId();
+    }
+
+    @PostMapping("/events/{id}/delete")
+    public String cancelEvent(@CurrentAccount Account account, @PathVariable String path, @PathVariable Long id) {
+        Club club = clubService.getStudyToUpdateStatus(account, path);
+        eventService.deleteEvent(eventRepository.findById(id).orElseThrow());
+        return "redirect:/club/" + club.getEncodedPath() + "/events";
     }
 
 }
