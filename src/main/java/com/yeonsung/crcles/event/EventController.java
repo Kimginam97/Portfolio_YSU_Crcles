@@ -31,6 +31,7 @@ public class EventController {
     private final EventValidator eventValidator;
     private final EventRepository eventRepository;
     private final ClubRepository clubRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     @InitBinder("eventForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -162,6 +163,44 @@ public class EventController {
         Club club = clubService.getClubToEnroll(path);
         eventService.cancelEnrollment(eventRepository.findById(id).orElseThrow(), account);
         return "redirect:/club/" + club.getEncodedPath() +  "/events/" + id;
+    }
+
+    /*
+    * 참가신청확인
+    * 참가신청취소
+    * 체크인
+    * 체크아웃
+    * */
+    @GetMapping("events/{eventId}/enrollments/{enrollmentId}/accept")
+    public String acceptEnrollment(@CurrentAccount Account account, @PathVariable String path,
+                                   @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
+        Club club = clubService.getClubToUpdate(account, path);
+        eventService.acceptEnrollment(event, enrollment);
+        return "redirect:/club/" + club.getEncodedPath() + "/events/" + event.getId();
+    }
+
+    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/reject")
+    public String rejectEnrollment(@CurrentAccount Account account, @PathVariable String path,
+                                   @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
+        Club club = clubService.getClubToUpdate(account, path);
+        eventService.rejectEnrollment(event, enrollment);
+        return "redirect:/club/" + club.getEncodedPath() + "/events/" + event.getId();
+    }
+
+    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/checkin")
+    public String checkInEnrollment(@CurrentAccount Account account, @PathVariable String path,
+                                    @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
+        Club club = clubService.getClubToUpdate(account, path);
+        eventService.checkInEnrollment(enrollment);
+        return "redirect:/club/" + club.getEncodedPath() + "/events/" + event.getId();
+    }
+
+    @GetMapping("/events/{eventId}/enrollments/{enrollmentId}/cancel-checkin")
+    public String cancelCheckInEnrollment(@CurrentAccount Account account, @PathVariable String path,
+                                          @PathVariable("eventId") Event event, @PathVariable("enrollmentId") Enrollment enrollment) {
+        Club club = clubService.getClubToUpdate(account, path);
+        eventService.cancelCheckInEnrollment(enrollment);
+        return "redirect:/club/" + club.getEncodedPath() + "/events/" + event.getId();
     }
 
 }

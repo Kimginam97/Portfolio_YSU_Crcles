@@ -55,6 +55,7 @@ public class Event {
     private Integer limitOfEnrollments; // 등록 인원수
 
     @OneToMany(mappedBy = "event")
+    @OrderBy("enrolledAt")
     private List<Enrollment> enrollments = new ArrayList<>();   // 등록
 
     @Enumerated(EnumType.STRING)
@@ -63,12 +64,13 @@ public class Event {
 
     // 모임을 모집중이고 회원이 다른지
     public boolean isEnrollableFor(UserAccount userAccount) {
-        return isNotClosed() && !isAlreadyEnrolled(userAccount);
+
+        return isNotClosed() && !isAttended(userAccount) &&!isAlreadyEnrolled(userAccount);
     }
 
     // 모임을 모집중이고 회원이 같은지 확인
     public boolean isDisenrollableFor(UserAccount userAccount) {
-        return isNotClosed() && isAlreadyEnrolled(userAccount);
+        return isNotClosed() && !isAttended(userAccount) &&isAlreadyEnrolled(userAccount);
     }
 
     // 모임 모집중
@@ -133,6 +135,7 @@ public class Event {
     public boolean canAccept(Enrollment enrollment) {
         return this.eventType == EventType.CONFIRMATIVE
                 && this.enrollments.contains(enrollment)
+                && this.limitOfEnrollments > this.getNumberOfAcceptedEnrollments()
                 && !enrollment.isAttended()
                 && !enrollment.isAccepted();
     }
@@ -178,6 +181,21 @@ public class Event {
         }
 
         return null;
+    }
+
+    // 참가신청확인
+    public void accept(Enrollment enrollment) {
+        if (this.eventType == EventType.CONFIRMATIVE
+                && this.limitOfEnrollments > this.getNumberOfAcceptedEnrollments()) {
+            enrollment.setAccepted(true);
+        }
+    }
+
+    // 참가신청취소
+    public void reject(Enrollment enrollment) {
+        if (this.eventType == EventType.CONFIRMATIVE) {
+            enrollment.setAccepted(false);
+        }
     }
 
 }
