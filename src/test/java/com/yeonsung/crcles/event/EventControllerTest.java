@@ -1,12 +1,16 @@
 package com.yeonsung.crcles.event;
 
-import com.yeonsung.crcles.WithAccount;
+import com.yeonsung.crcles.account.AccountFactory;
+import com.yeonsung.crcles.account.AccountRepository;
+import com.yeonsung.crcles.account.WithAccount;
 import com.yeonsung.crcles.account.Account;
 import com.yeonsung.crcles.club.Club;
 import com.yeonsung.crcles.club.ClubControllerTest;
-import org.junit.jupiter.api.DisplayName;
+import com.yeonsung.crcles.club.ClubFactory;
+import com.yeonsung.infra.MockMvcTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
@@ -16,17 +20,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class EventControllerTest extends ClubControllerTest {
+@MockMvcTest
+class EventControllerTest {
 
-    @Autowired
-    EventService eventService;
+    @Autowired EventService eventService;
     @Autowired EnrollmentRepository enrollmentRepository;
+    @Autowired AccountFactory accountFactory;
+    @Autowired ClubFactory clubFactory;
+    @Autowired MockMvc mockMvc;
+    @Autowired
+    AccountRepository accountRepository;
+
 
     @Test
     @WithAccount("dudurian")
     void 선착순모임_참가신청_자동수락() throws Exception {
-        Account helloClub = createAccount("helloClub");
-        Club club = createClub("test-club", helloClub);
+        Account helloClub = accountFactory.createAccount("helloClub");
+        Club club = clubFactory.createClub("test-club", helloClub);
         Event event = createEvent("test-event", EventType.FCFS, 2, club, helloClub);
 
         mockMvc.perform(post("/club/" + club.getPath() + "/events/" + event.getId() + "/enroll")
@@ -41,12 +51,12 @@ class EventControllerTest extends ClubControllerTest {
     @Test
     @WithAccount("dudurian")
     void 선착순모임_참가신청_대기중() throws Exception {
-        Account helloClub = createAccount("helloClub");
-        Club club = createClub("test-club", helloClub);
+        Account helloClub = accountFactory.createAccount("helloClub");
+        Club club = clubFactory.createClub("test-club", helloClub);
         Event event = createEvent("test-event", EventType.FCFS, 2, club, helloClub);
 
-        Account may = createAccount("may");
-        Account june = createAccount("june");
+        Account may = accountFactory.createAccount("may");
+        Account june = accountFactory.createAccount("june");
         eventService.newEnrollment(event, may);
         eventService.newEnrollment(event, june);
 
@@ -63,9 +73,9 @@ class EventControllerTest extends ClubControllerTest {
     @WithAccount("dudurian")
     void 참가신청확장자_취소_다음대기자_신청확인() throws Exception {
         Account dudurian = accountRepository.findByNickname("dudurian");
-        Account helloClub = createAccount("helloClub");
-        Account may = createAccount("may");
-        Club club = createClub("test-club", helloClub);
+        Account helloClub = accountFactory.createAccount("helloClub");
+        Account may = accountFactory.createAccount("may");
+        Club club = clubFactory.createClub("test-club", helloClub);
         Event event = createEvent("test-event", EventType.FCFS, 2, club, helloClub);
 
         eventService.newEnrollment(event, may);
@@ -90,9 +100,9 @@ class EventControllerTest extends ClubControllerTest {
     @WithAccount("dudurian")
     void 대기자참가_취소_기존참가자_유지() throws Exception {
         Account dudurian = accountRepository.findByNickname("dudurian");
-        Account helloClub = createAccount("helloClub");
-        Account may = createAccount("may");
-        Club club = createClub("test-club", helloClub);
+        Account helloClub = accountFactory.createAccount("helloClub");
+        Account may = accountFactory.createAccount("may");
+        Club club = clubFactory.createClub("test-club", helloClub);
         Event event = createEvent("test-event", EventType.FCFS, 2, club, helloClub);
 
         eventService.newEnrollment(event, may);
@@ -124,8 +134,8 @@ class EventControllerTest extends ClubControllerTest {
     @Test
     @WithAccount("dudurian")
     void 관리자확인모임_참가신청_대기() throws Exception {
-        Account helloClub = createAccount("helloClub");
-        Club club = createClub("test-club", helloClub);
+        Account helloClub = accountFactory.createAccount("helloClub");
+        Club club = clubFactory.createClub("test-club", helloClub);
         Event event = createEvent("test-event", EventType.CONFIRMATIVE, 2, club, helloClub);
 
         mockMvc.perform(post("/club/" + club.getPath() + "/events/" + event.getId() + "/enroll")

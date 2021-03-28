@@ -1,13 +1,13 @@
 package com.yeonsung.crcles.account;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yeonsung.crcles.WithAccount;
 import com.yeonsung.crcles.tag.Tag;
 import com.yeonsung.crcles.tag.TagForm;
 import com.yeonsung.crcles.tag.TagRepository;
 import com.yeonsung.crcles.zone.Zone;
 import com.yeonsung.crcles.zone.ZoneForm;
 import com.yeonsung.crcles.zone.ZoneRepository;
+import com.yeonsung.infra.MockMvcTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,9 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
+@MockMvcTest
 class AccountSettingsControllerTest {
 
     @Autowired

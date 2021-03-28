@@ -3,6 +3,7 @@ package com.yeonsung.crcles.main;
 import com.yeonsung.crcles.account.AccountRepository;
 import com.yeonsung.crcles.account.AccountService;
 import com.yeonsung.crcles.account.form.SignUpForm;
+import com.yeonsung.infra.MockMvcTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,8 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@MockMvcTest
 class MainControllerTest {
 
     @Autowired

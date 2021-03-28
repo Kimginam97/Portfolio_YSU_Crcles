@@ -63,12 +63,13 @@ public class Event {
 
     // 모임을 모집중이고 회원이 다른지
     public boolean isEnrollableFor(UserAccount userAccount) {
-        return isNotClosed() && !isAlreadyEnrolled(userAccount);
+
+        return isNotClosed() && !isAttended(userAccount) &&!isAlreadyEnrolled(userAccount);
     }
 
     // 모임을 모집중이고 회원이 같은지 확인
     public boolean isDisenrollableFor(UserAccount userAccount) {
-        return isNotClosed() && isAlreadyEnrolled(userAccount);
+        return isNotClosed() && !isAttended(userAccount) &&isAlreadyEnrolled(userAccount);
     }
 
     // 모임 모집중
@@ -178,6 +179,21 @@ public class Event {
         }
 
         return null;
+    }
+
+    // 참가신청확인
+    public void accept(Enrollment enrollment) {
+        if (this.eventType == EventType.CONFIRMATIVE
+                && this.limitOfEnrollments > this.getNumberOfAcceptedEnrollments()) {
+            enrollment.setAccepted(true);
+        }
+    }
+
+    // 참가신청취소
+    public void reject(Enrollment enrollment) {
+        if (this.eventType == EventType.CONFIRMATIVE) {
+            enrollment.setAccepted(false);
+        }
     }
 
 }

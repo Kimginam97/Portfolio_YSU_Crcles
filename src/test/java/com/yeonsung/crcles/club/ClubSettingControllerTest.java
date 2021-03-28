@@ -1,42 +1,38 @@
 package com.yeonsung.crcles.club;
 
-import com.yeonsung.crcles.WithAccount;
+import com.yeonsung.crcles.account.AccountFactory;
+import com.yeonsung.crcles.account.WithAccount;
 import com.yeonsung.crcles.account.Account;
 import com.yeonsung.crcles.account.AccountRepository;
-import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.DisplayName;
+import com.yeonsung.infra.MockMvcTest;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
-@RequiredArgsConstructor
-class ClubSettingControllerTest extends ClubControllerTest{
+@MockMvcTest
+class ClubSettingControllerTest{
 
     @Autowired
     MockMvc mockMvc;
     @Autowired ClubService clubService;
     @Autowired ClubRepository clubRepository;
-    @Autowired
-    AccountRepository accountRepository;
+    @Autowired AccountRepository accountRepository;
+    @Autowired AccountFactory accountFactory;
+    @Autowired ClubFactory clubFactory;
+
 
     @Test
     @WithAccount("dudurian")
     void 동아리소개_폼수정권한_실패() throws Exception {
-        Account helloClub = createAccount("helloClub");
-        Club club = createClub("test-club", helloClub);
+        Account helloClub = accountFactory.createAccount("helloClub");
+        Club club = clubFactory.createClub("test-club", helloClub);
 
         mockMvc.perform(get("/club/" + club.getPath() + "/settings/description"))
                 .andExpect(status().isForbidden());
@@ -46,7 +42,7 @@ class ClubSettingControllerTest extends ClubControllerTest{
     @WithAccount("dudurian")
     void 동아리소개_폼수정조회_성공() throws Exception {
         Account dudurian = accountRepository.findByNickname("dudurian");
-        Club club = createClub("test-club", dudurian);
+        Club club = clubFactory.createClub("test-club", dudurian);
 
         mockMvc.perform(get("/club/" + club.getPath() + "/settings/description"))
                 .andExpect(status().isOk())
@@ -60,7 +56,7 @@ class ClubSettingControllerTest extends ClubControllerTest{
     @WithAccount("dudurian")
     void 동아리_소개수정_성공() throws Exception {
         Account dudurian = accountRepository.findByNickname("dudurian");
-        Club club = createClub("test-club", dudurian);
+        Club club = clubFactory.createClub("test-club", dudurian);
 
         String settingsDescriptionUrl = "/club/" + club.getPath() + "/settings/description";
         mockMvc.perform(post(settingsDescriptionUrl)
@@ -76,7 +72,7 @@ class ClubSettingControllerTest extends ClubControllerTest{
     @WithAccount("dudurian")
     void 동아리_소개수정_실패() throws Exception {
         Account dudurian = accountRepository.findByNickname("dudurian");
-        Club club = createClub("test-club", dudurian);
+        Club club = clubFactory.createClub("test-club", dudurian);
 
         String settingsDescriptionUrl = "/club/" + club.getPath() + "/settings/description";
         mockMvc.perform(post(settingsDescriptionUrl)

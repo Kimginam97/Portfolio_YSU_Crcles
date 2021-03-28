@@ -8,11 +8,11 @@
 		<version>2.2.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.studyolle</groupId>
-	<artifactId>studyolle</artifactId>
+	<groupId>com.yeonsung</groupId>
+	<artifactId>yeonsung</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>studyolle</name>
-	<description>Study management web service</description>
+	<name>YSU_CLUB</name>
+	<description>Club management web service</description>
 
 	<properties>
 		<java.version>11</java.version>

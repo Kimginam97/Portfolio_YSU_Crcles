@@ -1,6 +1,5 @@
-package com.yeonsung.crcles;
+package com.yeonsung.crcles.account;
 
-import com.yeonsung.crcles.account.AccountService;
 import com.yeonsung.crcles.account.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

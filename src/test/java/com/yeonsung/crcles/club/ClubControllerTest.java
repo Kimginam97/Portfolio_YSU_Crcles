@@ -1,8 +1,9 @@
 package com.yeonsung.crcles.club;
 
-import com.yeonsung.crcles.WithAccount;
+import com.yeonsung.crcles.account.WithAccount;
 import com.yeonsung.crcles.account.Account;
 import com.yeonsung.crcles.account.AccountRepository;
+import com.yeonsung.infra.MockMvcTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,10 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
-@RequiredArgsConstructor
+@MockMvcTest
 public class ClubControllerTest {
 
     @Autowired

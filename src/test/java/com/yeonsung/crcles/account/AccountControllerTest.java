@@ -2,6 +2,7 @@ package com.yeonsung.crcles.account;
 
 import com.yeonsung.crcles.mail.EmailMessage;
 import com.yeonsung.crcles.mail.EmailService;
+import com.yeonsung.infra.MockMvcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
+
+@MockMvcTest
 class AccountControllerTest {
 
     @Autowired private MockMvc mockMvc;

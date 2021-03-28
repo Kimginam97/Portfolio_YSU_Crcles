@@ -1,4 +1,4 @@
-package com.yeonsung.crcles;
+package com.yeonsung.crcles.account;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 
