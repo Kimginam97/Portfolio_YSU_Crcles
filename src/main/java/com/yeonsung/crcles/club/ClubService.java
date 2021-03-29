@@ -1,11 +1,13 @@
 package com.yeonsung.crcles.club;
 
 import com.yeonsung.crcles.account.Account;
+import com.yeonsung.crcles.club.event.ClubCreatedEvent;
 import com.yeonsung.crcles.club.form.ClubDescriptionForm;
 import com.yeonsung.crcles.tag.Tag;
 import com.yeonsung.crcles.zone.Zone;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +21,13 @@ public class ClubService {
 
     private final ClubRepository clubRepository;
     private final ModelMapper modelMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     // 동아리 생성
     public Club createNewClub(Club club, Account account){
         Club newClub = clubRepository.save(club);
         newClub.addManager(account);
+        eventPublisher.publishEvent(new ClubCreatedEvent(newClub));
         return newClub;
     }
 
