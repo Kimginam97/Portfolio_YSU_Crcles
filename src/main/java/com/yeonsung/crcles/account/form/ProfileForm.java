@@ -9,7 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 
 @Data
-public class ProfileForm {
+public class
+ProfileForm {
 
     @Length(max = 25)
     private String bio; // 짧은 소개
