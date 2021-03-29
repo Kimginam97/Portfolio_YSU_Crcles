@@ -69,17 +69,17 @@ public class Account {
     * 알림
     * */
 
-    private boolean circlesCreatedByEmail;  // 동아리 생성 이메일 알람
+    private boolean clubCreatedByEmail;  // 동아리 생성 이메일 알람
 
-    private boolean circlesCreatedByWeb;    // 동아리 생성 웹 알람
+    private boolean clubCreatedByWeb;    // 동아리 생성 웹 알람
 
-    private boolean circlesEnrollmentResultByEmail; // 동아리 등록 이메일 알람
+    private boolean clubEnrollmentResultByEmail; // 동아리 등록 이메일 알람
 
-    private boolean circlesEnrollmentResultByWeb; // 동아리 등록 웹 알람
+    private boolean clubEnrollmentResultByWeb; // 동아리 등록 웹 알람
 
-    private boolean circlesUpdatedByEmail;  // 동아리 변경 이메일 알람
+    private boolean clubUpdatedByEmail;  // 동아리 변경 이메일 알람
 
-    private boolean circlesUpdatedByWeb;    // 동아리 변경 웹 알람
+    private boolean clubUpdatedByWeb;    // 동아리 변경 웹 알람
 
     /*
     * 태그

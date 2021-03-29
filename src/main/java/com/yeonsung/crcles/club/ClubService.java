@@ -27,7 +27,6 @@ public class ClubService {
     public Club createNewClub(Club club, Account account){
         Club newClub = clubRepository.save(club);
         newClub.addManager(account);
-        eventPublisher.publishEvent(new ClubCreatedEvent(newClub));
         return newClub;
     }
 
@@ -148,6 +147,7 @@ public class ClubService {
 
     public void publish(Club club) {
         club.publish();
+        this.eventPublisher.publishEvent(new ClubCreatedEvent(club));
     }
 
     public void close(Club club) {
