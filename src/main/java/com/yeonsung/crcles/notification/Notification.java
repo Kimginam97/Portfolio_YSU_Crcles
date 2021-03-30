@@ -29,7 +29,7 @@ public class Notification {
     @ManyToOne
     private Account account;    // 회원
 
-    private LocalDateTime createdLocalDateTime; // 생성된날짜
+    private LocalDateTime createdDateTime; // 생성된날짜
 
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;  // 알림타입

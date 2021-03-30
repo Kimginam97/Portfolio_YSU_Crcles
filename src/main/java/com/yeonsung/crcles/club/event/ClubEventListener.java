@@ -58,7 +58,7 @@ public class ClubEventListener {
         notification.setTitle(club.getTitle());
         notification.setLink("/club/" + club.getEncodedPath());
         notification.setChecked(false);
-        notification.setCreatedLocalDateTime(LocalDateTime.now());
+        notification.setCreatedDateTime(LocalDateTime.now());
         notification.setMessage(club.getShortDescription());
         notification.setAccount(account);
         notification.setNotificationType(NotificationType.CLUB_CREATED);
