@@ -63,11 +63,11 @@ public class ClubEventListener {
         accounts.addAll(club.getMembers());
 
         accounts.forEach(account -> {
-            if (account.isClubCreatedByEmail()) {
+            if (account.isClubUpdatedByEmail()) {
                 sendClubCreatedEmail(club, account,clubUpdateEvent.getMessage(),"연성대 " + club.getTitle() + "동아리가 생겼습니다!");
             }
 
-            if (account.isClubCreatedByWeb()) {
+            if (account.isClubUpdatedByWeb()) {
                 saveClubCreatedNotification(club, account,clubUpdateEvent.getMessage(),NotificationType.CLUB_UPDATED);
             }
         });
