@@ -2,6 +2,7 @@ package com.yeonsung.crcles.club;
 
 import com.yeonsung.crcles.account.Account;
 import com.yeonsung.crcles.club.event.ClubCreatedEvent;
+import com.yeonsung.crcles.club.event.ClubUpdateEvent;
 import com.yeonsung.crcles.club.form.ClubDescriptionForm;
 import com.yeonsung.crcles.tag.Tag;
 import com.yeonsung.crcles.zone.Zone;
@@ -57,6 +58,7 @@ public class ClubService {
 
     public void updateClubDescription(Club club, ClubDescriptionForm clubDescriptionForm) {
         modelMapper.map(clubDescriptionForm, club);
+        eventPublisher.publishEvent(new ClubUpdateEvent(club,"동아리 소개를 수정했습니다"));
     }
 
     // 동아리 이미지 수정
@@ -152,14 +154,17 @@ public class ClubService {
 
     public void close(Club club) {
         club.close();
+        eventPublisher.publishEvent(new ClubUpdateEvent(club,"동아리를 종료했습니다"));
     }
 
     public void startRecruit(Club club) {
         club.startRecruit();
+        eventPublisher.publishEvent(new ClubUpdateEvent(club,"동아리 팀원 모집을 시작합니다"));
     }
 
     public void stopRecruit(Club club) {
         club.stopRecruit();
+        eventPublisher.publishEvent(new ClubUpdateEvent(club,"동아리 팀원모집을 중단했습니다"));
     }
 
 

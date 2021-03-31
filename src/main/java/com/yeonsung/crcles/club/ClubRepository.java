@@ -9,24 +9,27 @@ public interface ClubRepository extends JpaRepository<Club,Long> {
 
     boolean existsByPath(String path);  // path 존재하는지 여부
 
-    @EntityGraph(value = "Club.withAll", type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = {"tags", "zones", "managers", "members"}, type = EntityGraph.EntityGraphType.LOAD)
     Club findByPath(String path);   // 해당 정보의 path 가져올때 연관된 엔티티 그래프 값도 가져온다
 
-    @EntityGraph(value = "Club.withTagsAndManagers", type = EntityGraph.EntityGraphType.FETCH)
+    @EntityGraph(attributePaths = {"tags", "managers"})
     Club findClubWithTagsByPath(String path);    // 동아리 태그와 매니저 권한 가져오기
 
-    @EntityGraph(value = "Club.withZonesAndManagers", type = EntityGraph.EntityGraphType.FETCH)
+    @EntityGraph(attributePaths = {"zones", "managers"})
     Club findClubWithZonesByPath(String path);   // 동아리 지역과 매니저 권한만가져오기
 
-    @EntityGraph(value = "Club.withManagers", type = EntityGraph.EntityGraphType.FETCH)
+    @EntityGraph(attributePaths = "managers")
     Club findClubWithManagersByPath(String path);   // 동아리 매니저 권한만 가져오기
 
-    @EntityGraph(value = "Club.withMembers", type = EntityGraph.EntityGraphType.FETCH)
-    Club findStudyWithMembersByPath(String path);
+    @EntityGraph(attributePaths = "members")
+    Club findClubWithMembersByPath(String path);    // 동아리 회원정보 가져오기
 
     Club findClubOnlyByPath(String path);
 
-    @EntityGraph(value = "Club.withTagsAndZones", type = EntityGraph.EntityGraphType.FETCH)
-    Club findClubWithTagsAndZonesById(Long id);
+    @EntityGraph(attributePaths = {"zones", "tags"})
+    Club findClubWithTagsAndZonesById(Long id);     // 동아리 지역과 태그정보 가져오기
+
+    @EntityGraph(attributePaths = {"members", "managers"})
+    Club findClubWithManagersAndMembersById(Long id);   //동아리 매니저와 회원정보 가져오기
 
 }
