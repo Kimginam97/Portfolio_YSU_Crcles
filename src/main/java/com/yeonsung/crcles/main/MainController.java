@@ -1,9 +1,11 @@
 package com.yeonsung.crcles.main;
 
 import com.yeonsung.crcles.account.Account;
+import com.yeonsung.crcles.account.AccountRepository;
 import com.yeonsung.crcles.account.CurrentAccount;
 import com.yeonsung.crcles.club.Club;
 import com.yeonsung.crcles.club.ClubRepository;
+import com.yeonsung.crcles.event.EnrollmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,11 +22,23 @@ import java.util.List;
 public class MainController {
 
     private final ClubRepository clubRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final AccountRepository accountRepository;
 
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
         if (account != null) {
-            model.addAttribute(account);
+            Account accountLoaded = accountRepository.findAccountWithTagsAndZonesById(account.getId());
+            model.addAttribute(accountLoaded);
+            model.addAttribute("enrollmentList", enrollmentRepository.findByAccountAndAcceptedOrderByEnrolledAtDesc(accountLoaded, true));
+            model.addAttribute("clubList", clubRepository.findByAccount(
+                    accountLoaded.getTags(),
+                    accountLoaded.getZones()));
+            model.addAttribute("clubManagerOf",
+                    clubRepository.findFirst5ByManagersContainingAndClosedOrderByPublishedDateTimeDesc(account, false));
+            model.addAttribute("studyMemberOf",
+                    clubRepository.findFirst5ByMembersContainingAndClosedOrderByPublishedDateTimeDesc(account, false));
+            return "index-after-login";
         }
 
         model.addAttribute("clubList",clubRepository.findFirst9ByPublishedAndClosedOrderByPublishedDateTimeDesc(true,false));

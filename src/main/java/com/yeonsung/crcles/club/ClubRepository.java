@@ -1,5 +1,6 @@
 package com.yeonsung.crcles.club;
 
+import com.yeonsung.crcles.account.Account;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,11 @@ public interface ClubRepository extends JpaRepository<Club,Long> ,ClubRepository
     @EntityGraph(attributePaths = {"members", "managers"})
     Club findClubWithManagersAndMembersById(Long id);   //동아리 매니저와 회원정보 가져오기
 
-    List<Club> findFirst9ByPublishedAndClosedOrderByPublishedDateTimeDesc(boolean published,boolean closed);
+    @EntityGraph(attributePaths = {"zones", "tags"})
+    List<Club> findFirst9ByPublishedAndClosedOrderByPublishedDateTimeDesc(boolean published,boolean closed);    // 새로출시된 기준 9개의 공개된 동아리
+
+    List<Club> findFirst5ByManagersContainingAndClosedOrderByPublishedDateTimeDesc(Account account, boolean closed);    // 새로출시된 5개의 관리중인 동아리
+
+    List<Club> findFirst5ByMembersContainingAndClosedOrderByPublishedDateTimeDesc(Account account, boolean closed);     // 새로출시된 5개의 가입중인 동아리
 
 }
