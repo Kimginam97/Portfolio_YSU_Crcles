@@ -96,10 +96,4 @@ public class ClubController {
         return "redirect:/club/" + club.getEncodedPath() + "/members";
     }
 
-    @GetMapping("/club/data") // 테스트 동아리 값넣기
-    public String generateTestData(@CurrentAccount Account account){
-        clubService.generateTestClub(account);
-        return "redirect:/";
-    }
-
 }

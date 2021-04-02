@@ -27,7 +27,6 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final ModelMapper modelMapper;
     private final ApplicationEventPublisher eventPublisher;
-    private final TagRepository tagRepository;
 
     // 동아리 생성
     public Club createNewClub(Club club, Account account){
@@ -229,22 +228,4 @@ public class ClubService {
         return club;
     }
 
-    public void generateTestClub(Account account) {
-        for (int i = 1 ; i <30 ;i++){
-            String randomValue = RandomString.make(5);
-            Club club = Club.builder()
-                    .title("테스트 스터디 " + randomValue)
-                    .path("test-" + randomValue)
-                    .shortDescription("테스트용 스터디입니다")
-                    .fullDescription("test")
-                    .tags(new HashSet<>())
-                    .managers(new HashSet<>())
-                    .build();
-
-            club.publish();
-            Club newClub = this.createNewClub(club,account);
-            Tag jpa = tagRepository.findByTitle("JPA");
-            newClub.getTags().add(jpa);
-        }
-    }
 }

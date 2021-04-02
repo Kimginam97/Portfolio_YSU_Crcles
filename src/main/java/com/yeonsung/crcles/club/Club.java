@@ -67,6 +67,8 @@ public class Club {
 
     private boolean useBanner;  // 배너 여부
 
+    private int memberCount;    // 회원수
+
     // 동아리 관리자 권한
     public void addManager(Account account) {
         this.managers.add(account);
@@ -149,11 +151,13 @@ public class Club {
     // 동아리 회원추가
     public void addMember(Account account) {
         this.members.add(account);
+        this.memberCount++;
     }
 
     // 동아리 회원삭제
     public void removeMember(Account account) {
         this.getMembers().remove(account);
+        this.memberCount--;
     }
 
     // 경로 가져오기
