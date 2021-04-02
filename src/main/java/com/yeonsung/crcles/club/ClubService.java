@@ -5,13 +5,17 @@ import com.yeonsung.crcles.club.event.ClubCreatedEvent;
 import com.yeonsung.crcles.club.event.ClubUpdateEvent;
 import com.yeonsung.crcles.club.form.ClubDescriptionForm;
 import com.yeonsung.crcles.tag.Tag;
+import com.yeonsung.crcles.tag.TagRepository;
 import com.yeonsung.crcles.zone.Zone;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.utility.RandomString;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
 
 import static com.yeonsung.crcles.club.form.ClubForm.VALID_PATH_PATTERN;
 
@@ -23,6 +27,7 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final ModelMapper modelMapper;
     private final ApplicationEventPublisher eventPublisher;
+    private final TagRepository tagRepository;
 
     // 동아리 생성
     public Club createNewClub(Club club, Account account){
@@ -224,4 +229,22 @@ public class ClubService {
         return club;
     }
 
+    public void generateTestClub(Account account) {
+        for (int i = 1 ; i <30 ;i++){
+            String randomValue = RandomString.make(5);
+            Club club = Club.builder()
+                    .title("테스트 스터디 " + randomValue)
+                    .path("test-" + randomValue)
+                    .shortDescription("테스트용 스터디입니다")
+                    .fullDescription("test")
+                    .tags(new HashSet<>())
+                    .managers(new HashSet<>())
+                    .build();
+
+            club.publish();
+            Club newClub = this.createNewClub(club,account);
+            Tag jpa = tagRepository.findByTitle("JPA");
+            newClub.getTags().add(jpa);
+        }
+    }
 }
