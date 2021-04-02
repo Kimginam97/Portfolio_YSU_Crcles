@@ -27,6 +27,7 @@ public class MainController {
             model.addAttribute(account);
         }
 
+        model.addAttribute("clubList",clubRepository.findFirst9ByPublishedAndClosedOrderByPublishedDateTimeDesc(true,false));
         return "index";
     }
 
