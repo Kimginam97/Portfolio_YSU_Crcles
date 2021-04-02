@@ -35,7 +35,8 @@ class ClubSettingControllerTest{
         Club club = clubFactory.createClub("test-club", helloClub);
 
         mockMvc.perform(get("/club/" + club.getPath() + "/settings/description"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isOk())
+                .andExpect(view().name("error"));
     }
 
     @Test
